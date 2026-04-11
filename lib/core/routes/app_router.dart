@@ -7,7 +7,8 @@ import '../../features/auth/providers/auth_provider.dart';
 import '../../features/customs/customs_form_screen.dart';
 import '../../features/layout/providers/layout_provider.dart';
 import '../../features/layout/screens/layout_screen.dart';
-import '../../features/notifications/notifications_screen.dart';
+import '../../features/notifications/presentation/providers/notification_provider.dart';
+import '../../features/notifications/presentation/screens/notifications_screen.dart';
 import '../../features/onboarding/providers/onboarding_provider.dart';
 import '../../features/onboarding/screens/onboarding_screen.dart';
 import '../../features/splash/splash_screen.dart';
@@ -49,7 +50,11 @@ class AppRouter {
           create: (_) => AuthProvider(),
           child: const ForgotPasswordScreen(),
         ),
-    notifications: (context) => const NotificationsScreen(),
+    notifications:
+        (context) => ChangeNotifierProvider(
+          create: (_) => NotificationProvider(),
+          child: const NotificationsScreen(),
+        ),
     customs: (context) => const CustomsFormScreen(),
   };
 }

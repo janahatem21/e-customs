@@ -17,4 +17,10 @@ class AppColors {
   static const blackText = Color(0xFF1E1E1E);
   static const greyText = Color(0xFF7A7A7A);
   static const lightGrey = Color(0xFFE5E5E5);
+
+  // Status
+  static const success = Color(0xFF4CAF50);
+  static const error = Color(0xFFE53935);
+  static const warning = Color(0xFFFFB300);
+  static const info = Color(0xFF2196F3);
 }
