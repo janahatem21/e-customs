@@ -1,4 +1,4 @@
-package com.ecustoms.app.e_customs
+package com.example.e_customs
 
 import io.flutter.embedding.android.FlutterActivity
 
