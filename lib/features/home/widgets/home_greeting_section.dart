@@ -6,6 +6,8 @@ class HomeGreetingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
       child: Container(
@@ -13,28 +15,24 @@ class HomeGreetingSection extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: AppColors.lightGrey.withOpacity(0.5),
+              color: AppColors.lightGrey.withValues(alpha: 0.5),
             ),
           ),
         ),
-        child: const Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Hello, Ahmed 👋',
-              style: TextStyle(
+              style: theme.textTheme.headlineLarge?.copyWith(
                 fontSize: 24,
-                fontWeight: FontWeight.w700,
                 color: AppColors.blackText,
               ),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               'Your shipment from Dubai is in transit.',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.subtitleColor,
-              ),
+              style: theme.textTheme.bodyMedium,
             ),
           ],
         ),
