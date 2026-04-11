@@ -19,7 +19,7 @@ class ECustomsApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'E-Customs',
       theme: AppTheme.lightTheme,
-      initialRoute: AppRouter.layout,
+      initialRoute: AppRouter.splash,
       routes: AppRouter.routes,
     );
   }
