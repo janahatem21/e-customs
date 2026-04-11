@@ -130,7 +130,7 @@ class _LoginForm extends StatelessWidget {
                 ? null
                 : () {
                     if (_formKey.currentState!.validate()) {
-                      Navigator.pushReplacementNamed(context, AppRouter.home);
+                      Navigator.pushReplacementNamed(context, AppRouter.layout);
                     }
                   },
             child: authProvider.isLoading

@@ -12,17 +12,21 @@ class RecentUpdateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Recent Update',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: AppColors.blackText,
+          Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: Text(
+              'Recent Update',
+              style: theme.textTheme.headlineLarge?.copyWith(
+                fontSize: 18,
+                color: AppColors.blackText,
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -31,20 +35,20 @@ class RecentUpdateCard extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
-                    color: AppColors.gradientMid,
-                    borderRadius: BorderRadius.circular(10),
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                   child: const Icon(
                     Icons.inventory_2_outlined,
-                    size: 18,
-                    color: AppColors.blackText,
+                    size: 20,
+                    color: AppColors.primary,
                   ),
                 ),
-                const SizedBox(width: 12),
-                const Expanded(
+                const SizedBox(width: 14),
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -53,40 +57,37 @@ class RecentUpdateCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               'EC-7721 Passed Customs',
-                              style: TextStyle(
-                                fontSize: 14,
+                              style: theme.textTheme.bodyLarge?.copyWith(
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.blackText,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Text(
                             '2h ago',
-                            style: TextStyle(
-                              fontSize: 10,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              fontSize: 9,
                               color: AppColors.subtitleColor,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
                         'Shipment from HK has cleared final inspection.',
-                        style: TextStyle(
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           fontSize: 12,
-                          color: AppColors.subtitleColor,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 12),
                 const Icon(
                   Icons.chevron_right_rounded,
-                  size: 18,
+                  size: 20,
                   color: AppColors.subtitleColor,
                 ),
               ],
