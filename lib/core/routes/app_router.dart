@@ -7,7 +7,9 @@ import '../../features/customs/customs_form_screen.dart';
 import '../../features/documents/screens/upload_documents_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
-import '../../features/onboarding/onboarding_screen.dart';
+import 'package:provider/provider.dart';
+import '../../features/onboarding/providers/onboarding_provider.dart';
+import '../../features/onboarding/screens/onboarding_screen.dart';
 import '../../features/payments/screens/fees_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/splash/splash_screen.dart';
@@ -29,7 +31,11 @@ class AppRouter {
 
   static final Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
-    onboarding: (context) => const OnboardingScreen(),
+    onboarding:
+        (context) => ChangeNotifierProvider(
+          create: (_) => OnboardingProvider(),
+          child: const OnboardingScreen(),
+        ),
     login: (context) => const LoginScreen(),
     register: (context) => const RegisterScreen(),
     home: (context) => const HomeScreen(),

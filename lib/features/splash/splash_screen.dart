@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
+import '../../core/services/shared_preferences_service.dart';
 import '../../core/routes/app_router.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -59,7 +61,14 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward().then((_) {
       if (mounted) {
-        Navigator.pushReplacementNamed(context, AppRouter.onboarding);
+        final bool onboardingComplete = SharedPreferencesService.getBool(
+          key: AppConstants.onBoardingKey,
+        );
+
+        Navigator.pushReplacementNamed(
+          context,
+          onboardingComplete ? AppRouter.login : AppRouter.onboarding,
+        );
       }
     });
   }
@@ -150,7 +159,7 @@ class _SplashScreenState extends State<SplashScreen>
                               position: _slideAnimation,
                               child: Text(
                                 AppStrings.appName,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 22,
                                   letterSpacing: 4.0,
                                   fontWeight: FontWeight.w700,
