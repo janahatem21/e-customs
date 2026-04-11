@@ -11,7 +11,11 @@ import '../../features/notifications/presentation/providers/notification_provide
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
 import '../../features/onboarding/providers/onboarding_provider.dart';
 import '../../features/onboarding/screens/onboarding_screen.dart';
+import '../../features/tracking/presentation/providers/tracking_provider.dart';
+import '../../features/tracking/presentation/screens/detailed_log_screen.dart';
 import '../../features/splash/splash_screen.dart';
+
+import '../../core/di/service_locator.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -22,6 +26,7 @@ class AppRouter {
   static const String forgotPassword = '/forgot-password';
   static const String notifications = '/notifications';
   static const String customs = '/customs';
+  static const String detailedLog = '/detailed-log';
 
   static final Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
@@ -52,9 +57,14 @@ class AppRouter {
         ),
     notifications:
         (context) => ChangeNotifierProvider(
-          create: (_) => NotificationProvider(),
+          create: (_) => getIt<NotificationProvider>(),
           child: const NotificationsScreen(),
         ),
     customs: (context) => const CustomsFormScreen(),
+    detailedLog:
+        (context) => ChangeNotifierProvider.value(
+          value: getIt<TrackingProvider>(),
+          child: const DetailedLogScreen(),
+        ),
   };
 }

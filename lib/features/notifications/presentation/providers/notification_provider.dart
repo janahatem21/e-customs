@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:e_customs/features/notifications/data/entities/notification_entity.dart';
 
+@injectable
 class NotificationProvider extends ChangeNotifier {
   List<NotificationEntity> _notifications = [];
-  
+
   NotificationType? _selectedType;
   NotificationType? get selectedType => _selectedType;
 
@@ -31,7 +33,7 @@ class NotificationProvider extends ChangeNotifier {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 800));
     _notifications = List.from(NotificationEntity.dummyNotifications);
-    
+
     _isLoading = false;
     notifyListeners();
   }

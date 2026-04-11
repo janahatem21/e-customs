@@ -13,9 +13,7 @@ class TrackingSearchBar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 14),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(
-            color: AppColors.lightGrey.withValues(alpha: 0.5),
-          ),
+          bottom: BorderSide(color: AppColors.lightGrey.withValues(alpha: 0.5)),
         ),
       ),
       child: Column(
@@ -39,7 +37,7 @@ class TrackingSearchBar extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       final provider = context.read<TrackingProvider>();
-                      provider.trackShipment(provider.searchController.text);
+                      provider.searchShipment(provider.searchController.text);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,

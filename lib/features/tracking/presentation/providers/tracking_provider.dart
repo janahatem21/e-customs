@@ -1,28 +1,31 @@
+import 'package:e_customs/features/tracking/data/models/shipment_model.dart';
+import 'package:e_customs/features/tracking/data/repositories/tracking_repository.dart';
 import 'package:flutter/material.dart';
-import '../../data/models/shipment_model.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class TrackingProvider extends ChangeNotifier {
-  ShipmentModel? _currentShipment;
-  ShipmentModel? get currentShipment => _currentShipment;
+  final TrackingRepository _repository;
+
+  TrackingProvider(this._repository);
+
+  ShipmentModel? get currentShipment => _repository.currentShipment;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  final TextEditingController searchController = TextEditingController(text: 'EC-882944012');
+  final TextEditingController searchController = TextEditingController(
+    text: 'EC-882944012',
+  );
 
-  void trackShipment(String trackingNumber) async {
+  Future<void> searchShipment(String trackingNumber) async {
     if (trackingNumber.isEmpty) return;
 
     _isLoading = true;
     notifyListeners();
 
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 1));
-    
-    // For now, always return the same dummy data if searching for the same number
-    // or just return dummy data for any search for UI demonstration.
-    _currentShipment = ShipmentModel.dummyShipment;
-    
+    await _repository.searchShipment(trackingNumber);
+
     _isLoading = false;
     notifyListeners();
   }

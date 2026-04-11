@@ -1,3 +1,4 @@
+import 'package:e_customs/core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -54,7 +55,9 @@ class TrackShipmentScreen extends StatelessWidget {
                           ),
                         ),
                         TextButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRouter.detailedLog);
+                          },
                           icon: const Icon(
                             IconsaxPlusLinear.document_text,
                             size: 16,

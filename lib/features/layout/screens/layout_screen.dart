@@ -13,17 +13,18 @@ import '../../tracking/presentation/providers/tracking_provider.dart';
 import '../../tracking/presentation/screens/track_shipment_screen.dart';
 import '../providers/layout_provider.dart';
 import '../widgets/bottom_nav.dart';
+import 'package:e_customs/core/di/service_locator.dart';
 
 class LayoutScreen extends StatelessWidget {
   const LayoutScreen({super.key});
 
   static final List<Widget> _tabs = [
     ChangeNotifierProvider(
-      create: (_) => HomeProvider(),
+      create: (_) => getIt<HomeProvider>(),
       child: const HomeScreen(),
     ),
     ChangeNotifierProvider(
-      create: (_) => TrackingProvider(),
+      create: (_) => getIt<TrackingProvider>(),
       child: const TrackShipmentScreen(),
     ),
     const UploadDocumentsScreen(),

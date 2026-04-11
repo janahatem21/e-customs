@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:e_customs/core/di/service_locator.dart';
 import 'package:e_customs/core/services/shared_preferences_service.dart';
 import 'core/routes/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -6,6 +7,7 @@ import 'core/theme/app_theme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferencesService.init();
+  configureDependencies();
 
   runApp(const ECustomsApp());
 }
