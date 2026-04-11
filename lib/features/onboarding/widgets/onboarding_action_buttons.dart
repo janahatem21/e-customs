@@ -1,133 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/routes/app_router.dart';
+import '../providers/onboarding_provider.dart';
 
-class FirstPageActions extends StatelessWidget {
-  final VoidCallback onNext;
-  final VoidCallback onSkip;
-
-  const FirstPageActions({
-    super.key,
-    required this.onNext,
-    required this.onSkip,
-  });
+class OnboardingActionButtons extends StatelessWidget {
+  const OnboardingActionButtons({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<OnboardingProvider>();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: provider.isLastPage
+            ? const _LastPageActions()
+            : provider.isFirstPage
+                ? const _FirstPageActions()
+                : const _MiddlePageActions(),
+      ),
+    );
+  }
+}
+
+class _FirstPageActions extends StatelessWidget {
+  const _FirstPageActions();
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.read<OnboardingProvider>();
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          height: 48,
-          child: ElevatedButton(
-            onPressed: onNext,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  AppStrings.getStarted,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Icon(Icons.arrow_forward_rounded, size: 18),
-              ],
-            ),
-          ),
+        _MainButton(
+          text: AppStrings.getStarted,
+          onPressed: () => provider.nextPage(context, AppRouter.login),
+          icon: Icons.arrow_forward_rounded,
         ),
-        const SizedBox(height: 12),
-        GestureDetector(
-          onTap: onSkip,
-          child: const Text(
-            AppStrings.skipToLogin,
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.subtitleColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+        const SizedBox(height: 16),
+        TextButton(
+          onPressed: () => provider.skip(context, AppRouter.login),
+          child: const Text(AppStrings.skipToLogin),
         ),
       ],
     );
   }
 }
 
-class MiddlePageActions extends StatelessWidget {
-  final VoidCallback onBack;
-  final VoidCallback onNext;
-
-  const MiddlePageActions({
-    super.key,
-    required this.onBack,
-    required this.onNext,
-  });
+class _MiddlePageActions extends StatelessWidget {
+  const _MiddlePageActions();
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.read<OnboardingProvider>();
     return Row(
       children: [
         Expanded(
-          child: SizedBox(
-            height: 48,
-            child: OutlinedButton(
-              onPressed: onBack,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.blackText,
-                side: const BorderSide(color: AppColors.lightGrey),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.arrow_back_ios_new_rounded, size: 14),
-                  SizedBox(width: 6),
-                  Text(
-                    AppStrings.back,
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-            ),
+          child: OutlinedButton(
+            onPressed: provider.previousPage,
+            child: const Text(AppStrings.back),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 16),
         Expanded(
-          child: SizedBox(
-            height: 48,
-            child: ElevatedButton(
-              onPressed: onNext,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    AppStrings.next,
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  SizedBox(width: 6),
-                  Icon(Icons.arrow_forward_ios_rounded, size: 14),
-                ],
-              ),
-            ),
+          child: _MainButton(
+            text: AppStrings.next,
+            onPressed: () => provider.nextPage(context, AppRouter.login),
+            icon: Icons.chevron_right_rounded,
           ),
         ),
       ],
@@ -135,73 +76,30 @@ class MiddlePageActions extends StatelessWidget {
   }
 }
 
-class LastPageActions extends StatelessWidget {
-  final VoidCallback onGetStarted;
-
-  const LastPageActions({
-    super.key,
-    required this.onGetStarted,
-  });
+class _LastPageActions extends StatelessWidget {
+  const _LastPageActions();
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.read<OnboardingProvider>();
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          height: 48,
-          child: ElevatedButton(
-            onPressed: onGetStarted,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  AppStrings.getStarted,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Icon(Icons.arrow_forward_rounded, size: 18),
-              ],
-            ),
-          ),
+        _MainButton(
+          text: AppStrings.getStarted,
+          onPressed: () => provider.nextPage(context, AppRouter.login),
+          icon: Icons.check_circle_outline_rounded,
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(
-              Icons.shield_outlined,
-              size: 14,
-              color: AppColors.footerColor,
-            ),
-            SizedBox(width: 6),
+          children: [
+            const Icon(Icons.shield_rounded, size: 14, color: AppColors.subtitleColor),
+            const SizedBox(width: 6),
             Text(
-              AppStrings.appName,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: AppColors.footerColor,
-              ),
-            ),
-            SizedBox(width: 8),
-            Text(
-              AppStrings.governmentVerified,
-              style: TextStyle(
-                fontSize: 10,
-                letterSpacing: 1,
-                fontWeight: FontWeight.w500,
-                color: AppColors.footerColor,
+              AppStrings.secureEncryption.toUpperCase(),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: AppColors.subtitleColor,
+                fontSize: 9,
               ),
             ),
           ],
@@ -210,3 +108,44 @@ class LastPageActions extends StatelessWidget {
     );
   }
 }
+
+class _MainButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final IconData icon;
+
+  const _MainButton({
+    required this.text,
+    required this.onPressed,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.2),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(text),
+            const SizedBox(width: 10),
+            Icon(icon, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
