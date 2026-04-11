@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../features/auth/login/forgot_password_screen.dart';
-import '../../features/auth/login/login_screen.dart';
-import '../../features/auth/register/register_screen.dart';
+import '../../features/auth/login/screens/forgot_password_screen.dart';
+import '../../features/auth/login/screens/login_screen.dart';
+import '../../features/auth/register/screens/register_screen.dart';
+import '../../features/auth/providers/auth_provider.dart';
 import '../../features/customs/customs_form_screen.dart';
 import '../../features/documents/screens/upload_documents_screen.dart';
 import '../../features/home/screens/home_screen.dart';
@@ -36,10 +37,22 @@ class AppRouter {
           create: (_) => OnboardingProvider(),
           child: const OnboardingScreen(),
         ),
-    login: (context) => const LoginScreen(),
-    register: (context) => const RegisterScreen(),
+    login:
+        (context) => ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+          child: const LoginScreen(),
+        ),
+    register:
+        (context) => ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+          child: const RegisterScreen(),
+        ),
     home: (context) => const HomeScreen(),
-    forgotPassword: (context) => const ForgotPasswordScreen(),
+    forgotPassword:
+        (context) => ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+          child: const ForgotPasswordScreen(),
+        ),
     notifications: (context) => const NotificationsScreen(),
     track: (context) => const TrackShipmentScreen(),
     profile: (context) => const ProfileScreen(),

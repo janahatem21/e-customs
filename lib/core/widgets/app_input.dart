@@ -11,6 +11,8 @@ class AppInput extends StatelessWidget {
   final TextEditingController? controller;
   final String? errorText;
   final ValueChanged<String>? onChanged;
+  final String? Function(String?)? validator;
+  final bool enabled;
 
   const AppInput({
     super.key,
@@ -23,68 +25,57 @@ class AppInput extends StatelessWidget {
     this.controller,
     this.errorText,
     this.onChanged,
+    this.validator,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         if (label != null) ...[
-          Text(
-            label!,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.blackText,
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 8),
+            child: Text(
+              label!,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.blackText,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+              ),
             ),
           ),
-          const SizedBox(height: 6),
         ],
-        TextField(
+        TextFormField(
           controller: controller,
           obscureText: obscureText,
-          keyboardType: keyboardType ?? TextInputType.text,
+          keyboardType: keyboardType,
           onChanged: onChanged,
+          validator: validator,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          enabled: enabled,
+          onTapOutside: (event) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
           style: const TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             color: AppColors.blackText,
+            fontWeight: FontWeight.w500,
           ),
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: const TextStyle(
-              fontSize: 14,
-              color: AppColors.subtitleColor,
-            ),
-            prefixIcon: prefixIcon,
-            suffixIcon: suffixIcon,
             errorText: errorText,
-            filled: true,
-            fillColor: AppColors.white,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 14,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.lightGrey),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.lightGrey),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primary),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.red),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.red),
-            ),
+            prefixIcon:
+                prefixIcon != null
+                    ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: prefixIcon,
+                    )
+                    : null,
+            prefixIconConstraints: const BoxConstraints(minWidth: 40),
+            suffixIcon: suffixIcon,
           ),
         ),
       ],

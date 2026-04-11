@@ -1,125 +1,101 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
 
 class PasswordStrengthCard extends StatelessWidget {
   final String password;
-
-  const PasswordStrengthCard({
-    super.key,
-    required this.password,
-  });
-
-  bool get hasMinLength => password.length >= 8;
-  bool get hasSpecialChar => RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
-  bool get hasUppercase => RegExp(r'[A-Z]').hasMatch(password);
-  bool get hasNumber => RegExp(r'[0-9]').hasMatch(password);
-
-  int get score {
-    int value = 0;
-    if (hasMinLength) value++;
-    if (hasSpecialChar) value++;
-    if (hasUppercase) value++;
-    if (hasNumber) value++;
-    return value;
-  }
-
-  String get levelText {
-    if (score <= 1) return AppStrings.weak;
-    if (score == 2 || score == 3) return AppStrings.medium;
-    return AppStrings.strong;
-  }
-
-  Color get levelColor {
-    if (score <= 1) return Colors.red;
-    if (score == 2 || score == 3) return Colors.orange;
-    return Colors.green;
-  }
-
-  double get progressValue {
-    if (score == 0) return 0.0;
-    return score / 4;
-  }
+  const PasswordStrengthCard({super.key, required this.password});
 
   @override
   Widget build(BuildContext context) {
+    bool hasMinLength = password.length >= 8;
+    bool hasUppercase = password.contains(RegExp(r'[A-Z]'));
+    bool hasDigits = password.contains(RegExp(r'[0-9]'));
+    bool hasSpecialCharacters = password.contains(
+      RegExp(r'[!@#$%^&*(),.?":{}|<>]'),
+    );
+
+    int metCount =
+        [
+          hasMinLength,
+          hasUppercase,
+          hasDigits,
+          hasSpecialCharacters,
+        ].where((met) => met).length;
+
+    double progress = metCount / 4;
+    Color strengthColor =
+        progress < 0.3
+            ? Colors.red
+            : progress < 0.7
+            ? Colors.orange
+            : Colors.green;
+    String strengthText =
+        progress < 0.3
+            ? 'Weak'
+            : progress < 0.7
+            ? 'Medium'
+            : 'Strong';
+
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.lightGrey),
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.lightGrey.withValues(alpha: 0.5)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                AppStrings.securityLevel,
+                'Password Security',
                 style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.subtitleColor,
-                  letterSpacing: 1,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.blackText,
                 ),
               ),
-              Text(
-                levelText,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.blackText,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: strengthColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  strengthText,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: strengthColor,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          Container(
-            width: double.infinity,
-            height: 4,
-            decoration: BoxDecoration(
-              color: AppColors.gradientMid,
-              borderRadius: BorderRadius.circular(999),
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: FractionallySizedBox(
-                widthFactor: progressValue,
-                child: Container(
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: levelColor,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                ),
-              ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: AppColors.lightGrey.withValues(alpha: 0.3),
+              color: strengthColor,
+              minHeight: 6,
             ),
           ),
-          const SizedBox(height: 12),
-          GridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            childAspectRatio: 4.8,
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
             children: [
-              _RuleItem(
-                text: AppStrings.ruleCharacters,
-                isDone: hasMinLength,
+              _RequirementChip(label: '8+ Characters', isMet: hasMinLength),
+              _RequirementChip(label: 'Uppercase', isMet: hasUppercase),
+              _RequirementChip(
+                label: 'Special Character',
+                isMet: hasSpecialCharacters,
               ),
-              _RuleItem(
-                text: AppStrings.ruleSpecialSymbol,
-                isDone: hasSpecialChar,
-              ),
-              _RuleItem(
-                text: AppStrings.ruleUppercase,
-                isDone: hasUppercase,
-              ),
-              _RuleItem(
-                text: AppStrings.ruleNumber,
-                isDone: hasNumber,
-              ),
+              _RequirementChip(label: 'Number', isMet: hasDigits),
             ],
           ),
         ],
@@ -128,35 +104,48 @@ class PasswordStrengthCard extends StatelessWidget {
   }
 }
 
-class _RuleItem extends StatelessWidget {
-  final String text;
-  final bool isDone;
+class _RequirementChip extends StatelessWidget {
+  final String label;
+  final bool isMet;
 
-  const _RuleItem({
-    required this.text,
-    required this.isDone,
-  });
+  const _RequirementChip({required this.label, required this.isMet});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          isDone ? Icons.check_circle : Icons.radio_button_unchecked,
-          size: 12,
-          color: isDone ? Colors.green : AppColors.subtitleColor,
-        ),
-        const SizedBox(width: 6),
-        Expanded(
-          child: Text(
-            text,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color:
+            isMet
+                ? Colors.green.withValues(alpha: 0.1)
+                : AppColors.lightGrey.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            isMet ? Icons.check_circle_rounded : Icons.circle_outlined,
+            size: 12,
+            color:
+                isMet
+                    ? Colors.green
+                    : AppColors.subtitleColor.withValues(alpha: 0.5),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            label,
             style: TextStyle(
-              fontSize: 11,
-              color: isDone ? AppColors.blackText : AppColors.subtitleColor,
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color:
+                  isMet
+                      ? Colors.green.withValues(alpha: 0.8)
+                      : AppColors.subtitleColor.withValues(alpha: 0.8),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
