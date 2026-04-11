@@ -169,7 +169,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                         );
                         return;
                       }
-                      Navigator.pushReplacementNamed(context, AppRouter.home);
+                      Navigator.pushReplacementNamed(context, AppRouter.layout);
                     }
                   },
             child: authProvider.isLoading

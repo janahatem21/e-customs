@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/routes/app_router.dart';
 import '../../../core/widgets/app_card.dart';
-import '../../../core/widgets/bottom_nav.dart';
 import '../data/tracking_steps.dart';
 import '../widgets/tracking_step_item.dart';
-
 
 class TrackShipmentScreen extends StatelessWidget {
   const TrackShipmentScreen({super.key});
@@ -15,79 +13,72 @@ class TrackShipmentScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
-        child: Column(
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 20),
           children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.only(bottom: 20),
-                children: [
-                  _TrackHeader(
-                    onBack: () => Navigator.pop(context),
-                    onNotifications: () {
-                      Navigator.pushNamed(context, AppRouter.notifications);
-                    },
-                  ),
-                  const _SearchSection(),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
-                    child: _DarkInfoCard(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          'Shipment Journey',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.blackText,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'View Detailed Log',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.subtitleColor,
-                              ),
-                            ),
-                            SizedBox(width: 4),
-                            Icon(
-                              Icons.arrow_forward_rounded,
-                              size: 14,
-                              color: AppColors.subtitleColor,
-                            ),
-                          ],
-                        ),
-                      ],
+            _TrackHeader(
+              onNotifications: () {
+                Navigator.pushNamed(context, AppRouter.notifications);
+              },
+            ),
+            const _SearchSection(),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
+              child: _DarkInfoCard(),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text(
+                    'Shipment Journey',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.blackText,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                    child: AppCard(
-                      child: Column(
-                        children: List.generate(
-                          trackingSteps.length,
-                              (index) => TrackingStepItem(
-                            step: trackingSteps[index],
-                            isLast: index == trackingSteps.length - 1,
-                          ),
+                  Row(
+                    children: [
+                      Text(
+                        'View Detailed Log',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.subtitleColor,
                         ),
                       ),
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: _VerificationCard(),
+                      SizedBox(width: 4),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 14,
+                        color: AppColors.subtitleColor,
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            const BottomNav(currentIndex: 1),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+              child: AppCard(
+                child: Column(
+                  children: List.generate(
+                    trackingSteps.length,
+                    (index) => TrackingStepItem(
+                      step: trackingSteps[index],
+                      isLast: index == trackingSteps.length - 1,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: _VerificationCard(),
+            ),
           ],
         ),
       ),
@@ -96,11 +87,9 @@ class TrackShipmentScreen extends StatelessWidget {
 }
 
 class _TrackHeader extends StatelessWidget {
-  final VoidCallback onBack;
   final VoidCallback onNotifications;
 
   const _TrackHeader({
-    required this.onBack,
     required this.onNotifications,
   });
 
@@ -110,14 +99,7 @@ class _TrackHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(12, 14, 12, 10),
       child: Row(
         children: [
-          IconButton(
-            onPressed: onBack,
-            icon: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              size: 18,
-              color: AppColors.blackText,
-            ),
-          ),
+          const SizedBox(width: 48), // Spacer to balance notifications icon
           const Expanded(
             child: Text(
               'Track Shipment',
@@ -153,7 +135,7 @@ class _SearchSection extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: AppColors.lightGrey.withOpacity(0.5),
+            color: AppColors.lightGrey.withValues(alpha: 0.5),
           ),
         ),
       ),
@@ -182,16 +164,16 @@ class _SearchSection extends StatelessWidget {
                     controller: TextEditingController(text: 'EC-882944012'),
                     decoration: const InputDecoration(
                       hintText: 'EC-882944012',
-                      hintStyle: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.blackText,
-                      ),
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      focusedErrorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
                       prefixIcon: Icon(
                         Icons.search,
                         size: 16,
                         color: AppColors.subtitleColor,
                       ),
-                      border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(vertical: 10),
                     ),
                   ),
@@ -273,7 +255,7 @@ class _DarkInfoCard extends StatelessWidget {
                   vertical: 5,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.10),
+                  color: Colors.white.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: const Text(
@@ -328,7 +310,7 @@ class _DarkInfoCard extends StatelessWidget {
             width: double.infinity,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.18),
+              color: Colors.white.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(999),
             ),
             child: Align(

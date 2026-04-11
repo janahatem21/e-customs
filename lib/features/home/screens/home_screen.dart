@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/routes/app_router.dart';
-import '../../../core/widgets/bottom_nav.dart';
+import '../../layout/providers/layout_provider.dart';
 import '../widgets/home_greeting_section.dart';
 import '../widgets/home_top_bar.dart';
 import '../widgets/quick_track_card.dart';
 import '../widgets/recent_update_card.dart';
 import '../widgets/services_section.dart';
-
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
       title: 'Track Shipment',
       subtitle: 'Real-time status of your global parcels.',
       icon: Icons.inventory_2_outlined,
-      route: AppRouter.track,
+      tabIndex: 1,
     ),
     HomeServiceItem(
       title: 'Customs Declaration',
@@ -29,19 +29,19 @@ class HomeScreen extends StatelessWidget {
       title: 'Upload Documents',
       subtitle: 'Manage invoices, IDs, and shipping labels.',
       icon: Icons.upload_file_outlined,
-      route: AppRouter.documents,
+      tabIndex: 2,
     ),
     HomeServiceItem(
       title: 'Pay Customs Fees',
       subtitle: 'Secure payment for duties and taxes.',
       icon: Icons.credit_card_outlined,
-      route: AppRouter.fees,
+      tabIndex: 3,
     ),
     HomeServiceItem(
       title: 'Shipment History',
       subtitle: 'View logs of all your past clearances.',
       icon: Icons.history_rounded,
-      route: AppRouter.track,
+      tabIndex: 1,
     ),
     HomeServiceItem(
       title: 'Notifications',
@@ -53,41 +53,41 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final layoutProvider = context.read<LayoutProvider>();
+
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
-        child: Column(
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 20),
           children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.only(bottom: 20),
-                children: [
-                  HomeTopBar(
-                    onNotificationsTap: () {
-                      Navigator.pushNamed(context, AppRouter.notifications);
-                    },
-                  ),
-                  const HomeGreetingSection(),
-                  QuickTrackCard(
-                    onTrackTap: () {
-                      Navigator.pushNamed(context, AppRouter.track);
-                    },
-                  ),
-                  ServicesSection(
-                    services: services,
-                    onServiceTap: (route) {
-                      Navigator.pushNamed(context, route);
-                    },
-                  ),
-                  RecentUpdateCard(
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRouter.track);
-                    },
-                  ),
-                ],
-              ),
+            HomeTopBar(
+              onNotificationsTap: () {
+                Navigator.pushNamed(context, AppRouter.notifications);
+              },
             ),
-            const BottomNav(currentIndex: 0),
+            const HomeGreetingSection(),
+            QuickTrackCard(
+              onTrackTap: () {
+                layoutProvider.setIndex(1);
+              },
+            ),
+            ServicesSection(
+              services: services,
+              onServiceTap: (item) {
+                if (item.tabIndex != null) {
+                  layoutProvider.setIndex(item.tabIndex!);
+                } else if (item.route != null) {
+                  Navigator.pushNamed(context, item.route!);
+                }
+              },
+            ),
+            RecentUpdateCard(
+              onTap: () {
+                layoutProvider.setIndex(1);
+              },
+            ),
           ],
         ),
       ),
@@ -99,12 +99,14 @@ class HomeServiceItem {
   final String title;
   final String subtitle;
   final IconData icon;
-  final String route;
+  final String? route;
+  final int? tabIndex;
 
   const HomeServiceItem({
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.route,
+    this.route,
+    this.tabIndex,
   });
 }

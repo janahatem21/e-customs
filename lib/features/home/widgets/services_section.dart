@@ -5,7 +5,7 @@ import '../screens/home_screen.dart';
 
 class ServicesSection extends StatelessWidget {
   final List<HomeServiceItem> services;
-  final ValueChanged<String> onServiceTap;
+  final ValueChanged<HomeServiceItem> onServiceTap;
 
   const ServicesSection({
     super.key,
@@ -64,7 +64,7 @@ class ServicesSection extends StatelessWidget {
             itemBuilder: (context, index) {
               final item = services[index];
               return AppCard(
-                onTap: () => onServiceTap(item.route),
+                onTap: () => onServiceTap(item),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
