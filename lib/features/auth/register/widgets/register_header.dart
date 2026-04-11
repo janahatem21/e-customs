@@ -8,46 +8,41 @@ class RegisterHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          width: 64,
-          height: 64,
+          width: 70,
+          height: 70,
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.gradientMid,
-            borderRadius: BorderRadius.circular(16),
+            color: AppColors.primary.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
           ),
-          child: const Icon(
-            Icons.shield_outlined,
-            size: 28,
-            color: AppColors.blackText,
-          ),
-        ),
-        const SizedBox(height: 12),
-        const Text(
-          AppStrings.appName,
-          style: TextStyle(
-            fontSize: 12,
-            color: AppColors.subtitleColor,
-          ),
-        ),
-        const SizedBox(height: 4),
-        const Text(
-          AppStrings.joinTheGateway,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: AppColors.blackText,
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.person_add_rounded,
+              size: 24,
+              color: Colors.white,
+            ),
           ),
         ),
-        const SizedBox(height: 6),
-        const Text(
+        const SizedBox(height: 24),
+        Text(
+          AppStrings.createAccount,
+          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                fontSize: 24,
+              ),
+        ),
+        const SizedBox(height: 8),
+        Text(
           AppStrings.registerSubtitle,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 14,
-            color: AppColors.subtitleColor,
-            height: 1.5,
-          ),
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
       ],
     );

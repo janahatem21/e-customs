@@ -3,8 +3,8 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/routes/app_router.dart';
 
-class RegisterFooter extends StatelessWidget {
-  const RegisterFooter({super.key});
+class SignUpPrompt extends StatelessWidget {
+  const SignUpPrompt({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +14,9 @@ class RegisterFooter extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
-              Icons.verified_user_rounded,
+              Icons.shield_moon_rounded,
               size: 14,
-              color: Colors.green,
+              color: AppColors.subtitleColor,
             ),
             const SizedBox(width: 8),
             Text(
@@ -31,17 +31,17 @@ class RegisterFooter extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         TextButton(
-          onPressed: () => Navigator.pushReplacementNamed(context, AppRouter.login),
+          onPressed: () => Navigator.pushNamed(context, AppRouter.register),
           child: RichText(
             text: TextSpan(
-              text: 'Already have an account? ',
+              text: AppStrings.noAccount,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 14,
                   ),
-              children: const [
+              children: [
                 TextSpan(
-                  text: AppStrings.signIn,
-                  style: TextStyle(
+                  text: AppStrings.signUpNow,
+                  style: const TextStyle(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w800,
                   ),
