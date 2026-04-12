@@ -22,10 +22,7 @@ class LoginScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              AppColors.gradientTop,
-              Colors.white,
-            ],
+            colors: [AppColors.gradientTop, Colors.white],
             stops: [0.0, 0.4],
           ),
         ),
@@ -71,15 +68,20 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class _LoginForm extends StatelessWidget {
+class _LoginForm extends StatefulWidget {
   const _LoginForm();
 
-  static final _formKey = GlobalKey<FormState>();
+  @override
+  State<_LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<_LoginForm> {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
-    
+
     return Form(
       key: _formKey,
       child: Column(
@@ -112,7 +114,8 @@ class _LoginForm extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-              onPressed: () => Navigator.pushNamed(context, AppRouter.forgotPassword),
+              onPressed:
+                  () => Navigator.pushNamed(context, AppRouter.forgotPassword),
               style: TextButton.styleFrom(
                 visualDensity: VisualDensity.compact,
                 foregroundColor: AppColors.primary,
@@ -126,32 +129,42 @@ class _LoginForm extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           ElevatedButton(
-            onPressed: authProvider.isLoading
-                ? null
-                : () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.pushReplacementNamed(context, AppRouter.layout);
-                    }
-                  },
-            child: authProvider.isLoading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      color: Colors.white,
-                    ),
-                  )
-                : const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(AppStrings.signIn),
-                      SizedBox(width: 10),
-                      Icon(Icons.arrow_forward_rounded, size: 18),
-                    ],
-                  ),
-          ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-           .shimmer(delay: 2000.ms, duration: 1500.ms, color: Colors.white24),
+                onPressed:
+                    authProvider.isLoading
+                        ? null
+                        : () {
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              AppRouter.layout,
+                            );
+                          }
+                        },
+                child:
+                    authProvider.isLoading
+                        ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            color: Colors.white,
+                          ),
+                        )
+                        : const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(AppStrings.signIn),
+                            SizedBox(width: 10),
+                            Icon(Icons.arrow_forward_rounded, size: 18),
+                          ],
+                        ),
+              )
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
+              .shimmer(
+                delay: 2000.ms,
+                duration: 1500.ms,
+                color: Colors.white24,
+              ),
         ],
       ),
     );
