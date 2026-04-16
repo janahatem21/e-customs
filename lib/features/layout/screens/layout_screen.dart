@@ -9,7 +9,8 @@ import '../../documents/presentation/provider/upload_documents_provider.dart';
 import '../../documents/presentation/screens/upload_documents_screen.dart';
 import '../../home/screens/home_screen.dart';
 import '../../payments/screens/fees_screen.dart';
-import '../../profile/screens/profile_screen.dart';
+import '../../profile/presentation/screens/profile_screen.dart';
+import '../../profile/presentation/provider/profile_provider.dart';
 import '../../tracking/presentation/providers/tracking_provider.dart';
 import '../../tracking/presentation/screens/track_shipment_screen.dart';
 import '../providers/layout_provider.dart';
@@ -33,7 +34,10 @@ class LayoutScreen extends StatelessWidget {
       child: const UploadDocumentsScreen(),
     ),
     const FeesScreen(),
-    const ProfileScreen(),
+    ChangeNotifierProvider(
+      create: (_) => getIt<ProfileProvider>(),
+      child: const ProfileScreen(),
+    ),
   ];
 
 
