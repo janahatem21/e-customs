@@ -14,6 +14,8 @@ import '../../features/onboarding/screens/onboarding_screen.dart';
 import '../../features/tracking/presentation/providers/tracking_provider.dart';
 import '../../features/tracking/presentation/screens/detailed_log_screen.dart';
 import '../../features/splash/splash_screen.dart';
+import '../../features/payments/presentation/screens/payment_checkout_screen.dart';
+import '../../features/payments/presentation/provider/fees_provider.dart';
 
 import '../../core/di/service_locator.dart';
 
@@ -27,6 +29,7 @@ class AppRouter {
   static const String notifications = '/notifications';
   static const String customs = '/customs';
   static const String detailedLog = '/detailed-log';
+  static const String checkout = '/checkout';
 
   static final Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
@@ -65,6 +68,11 @@ class AppRouter {
         (context) => ChangeNotifierProvider.value(
           value: getIt<TrackingProvider>(),
           child: const DetailedLogScreen(),
+        ),
+        checkout:
+        (context) => ChangeNotifierProvider.value(
+          value: getIt<FeesProvider>(),
+          child: const PaymentCheckoutScreen(),
         ),
   };
 }

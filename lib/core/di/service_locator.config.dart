@@ -14,6 +14,8 @@ import 'package:e_customs/features/documents/presentation/provider/upload_docume
 import 'package:e_customs/features/home/providers/home_provider.dart' as _i191;
 import 'package:e_customs/features/notifications/presentation/providers/notification_provider.dart'
     as _i106;
+import 'package:e_customs/features/payments/presentation/provider/fees_provider.dart'
+    as _i552;
 import 'package:e_customs/features/profile/presentation/provider/profile_provider.dart'
     as _i924;
 import 'package:e_customs/features/tracking/data/repositories/tracking_repository.dart'
@@ -35,6 +37,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i191.HomeProvider>(() => _i191.HomeProvider());
     gh.factory<_i106.NotificationProvider>(() => _i106.NotificationProvider());
+    gh.factory<_i552.FeesProvider>(() => _i552.FeesProvider());
     gh.factory<_i924.ProfileProvider>(() => _i924.ProfileProvider());
     gh.lazySingleton<_i508.TrackingRepository>(
       () => _i508.TrackingRepositoryImpl(),
