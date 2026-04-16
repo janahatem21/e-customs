@@ -44,15 +44,13 @@ class LayoutScreen extends StatelessWidget {
     ),
   ];
 
-
   @override
   Widget build(BuildContext context) {
     return Consumer<LayoutProvider>(
       builder: (context, layoutProvider, child) {
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
+            centerTitle: false,
             title: Image.asset(AppAssets.logo, height: 40),
             actions: [
               IconButton(

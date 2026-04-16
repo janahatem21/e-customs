@@ -1,3 +1,4 @@
+import 'package:e_customs/core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -100,7 +101,9 @@ class FeesScreen extends StatelessWidget {
                   builder: (context, total, _) {
                     return AppButton(
                       text: "Pay Now (€${total.toStringAsFixed(2)})",
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRouter.checkout);
+                      },
                       shimmer: true,
                     );
                   },

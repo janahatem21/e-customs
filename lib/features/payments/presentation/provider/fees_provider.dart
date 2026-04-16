@@ -31,6 +31,44 @@ class FeesProvider extends ChangeNotifier {
     ),
   ];
 
+  // Card Info
+  String _cardHolderName = "";
+  String _cardNumber = "";
+  String _expiryDate = "";
+  String _cvv = "";
+  int _selectedPaymentMethod = 0; // 0: Credit Card, 1: Digital Wallet
+
+  String get cardHolderName => _cardHolderName;
+  String get cardNumber => _cardNumber;
+  String get expiryDate => _expiryDate;
+  String get cvv => _cvv;
+  int get selectedPaymentMethod => _selectedPaymentMethod;
+
+  void updateCardHolderName(String value) {
+    _cardHolderName = value;
+    notifyListeners();
+  }
+
+  void updateCardNumber(String value) {
+    _cardNumber = value;
+    notifyListeners();
+  }
+
+  void updateExpiryDate(String value) {
+    _expiryDate = value;
+    notifyListeners();
+  }
+
+  void updateCvv(String value) {
+    _cvv = value;
+    notifyListeners();
+  }
+
+  void setPaymentMethod(int index) {
+    _selectedPaymentMethod = index;
+    notifyListeners();
+  }
+
   String get shipmentId => _shipmentId;
   double get totalAmount => _totalAmount;
   String get currency => _currency;
