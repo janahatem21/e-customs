@@ -1,3 +1,4 @@
+import 'package:e_customs/core/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -128,43 +129,16 @@ class _LoginFormState extends State<_LoginForm> {
             ),
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
-                onPressed:
-                    authProvider.isLoading
-                        ? null
-                        : () {
-                          if (_formKey.currentState!.validate()) {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              AppRouter.layout,
-                            );
-                          }
-                        },
-                child:
-                    authProvider.isLoading
-                        ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            color: Colors.white,
-                          ),
-                        )
-                        : const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(AppStrings.signIn),
-                            SizedBox(width: 10),
-                            Icon(Icons.arrow_forward_rounded, size: 18),
-                          ],
-                        ),
-              )
-              .animate(onPlay: (controller) => controller.repeat(reverse: true))
-              .shimmer(
-                delay: 2000.ms,
-                duration: 1500.ms,
-                color: Colors.white24,
-              ),
+          AppButton(
+            text: AppStrings.signIn,
+            isLoading: authProvider.isLoading,
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                Navigator.pushReplacementNamed(context, AppRouter.layout);
+              }
+            },
+            shimmer: true,
+          ),
         ],
       ),
     );

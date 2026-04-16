@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../constants/app_colors.dart';
 
-enum AppButtonVariant {
-  primary,
-  outline,
-  ghost,
-}
+enum AppButtonVariant { primary, outline, ghost, tonal }
 
 class AppButton extends StatelessWidget {
   final String text;
@@ -15,6 +12,8 @@ class AppButton extends StatelessWidget {
   final Widget? leadingIcon;
   final Widget? trailingIcon;
   final bool isLoading;
+  final bool shimmer;
+  final Color? color;
 
   const AppButton({
     super.key,
@@ -25,87 +24,77 @@ class AppButton extends StatelessWidget {
     this.leadingIcon,
     this.trailingIcon,
     this.isLoading = false,
+    this.shimmer = false,
+    this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: fullWidth ? double.infinity : null,
-      height: 48,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-        style: _getStyle(),
-        child: isLoading
-            ? const SizedBox(
-          width: 18,
-          height: 18,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            color: Colors.white,
-          ),
-        )
-            : Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (leadingIcon != null) ...[
-              leadingIcon!,
-              const SizedBox(width: 8),
-            ],
-            Flexible(
-              child: Text(
-                text,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            if (trailingIcon != null) ...[
-              const SizedBox(width: 8),
-              trailingIcon!,
-            ],
-          ],
-        ),
+    Widget button = ElevatedButton(
+      onPressed: isLoading ? null : onPressed,
+      style: ElevatedButton.styleFrom(
+        minimumSize: Size(fullWidth ? double.infinity : 0, 0),
+        backgroundColor:
+            variant == AppButtonVariant.outline
+                ? AppColors.white
+                : (variant == AppButtonVariant.ghost
+                    ? Colors.transparent
+                    : (variant == AppButtonVariant.tonal
+                        ? AppColors.primary.withValues(alpha: 0.1)
+                        : null)),
+        foregroundColor:
+            color ??
+            (variant == AppButtonVariant.primary
+                ? null
+                : (variant == AppButtonVariant.tonal
+                    ? AppColors.primary
+                    : AppColors.blackText)),
+        side:
+            variant == AppButtonVariant.outline
+                ? BorderSide(color: color ?? AppColors.lightGrey)
+                : null,
+        elevation: variant == AppButtonVariant.primary ? null : 0,
       ),
+      child:
+          isLoading
+              ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+              : Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (leadingIcon != null) ...[
+                    leadingIcon!,
+                    const SizedBox(width: 8),
+                  ],
+                  Flexible(
+                    child: Text(
+                      text,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: color != null ? TextStyle(color: color) : null,
+                    ),
+                  ),
+                  if (trailingIcon != null) ...[
+                    const SizedBox(width: 8),
+                    trailingIcon!,
+                  ],
+                ],
+              ),
     );
-  }
 
-  ButtonStyle _getStyle() {
-    switch (variant) {
-      case AppButtonVariant.primary:
-        return ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        );
-
-      case AppButtonVariant.outline:
-        return ElevatedButton.styleFrom(
-          backgroundColor: AppColors.white,
-          foregroundColor: AppColors.blackText,
-          elevation: 0,
-          side: const BorderSide(color: AppColors.lightGrey),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        );
-
-      case AppButtonVariant.ghost:
-        return ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          foregroundColor: AppColors.blackText,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        );
+    if (shimmer && !isLoading) {
+      button = button
+          .animate(onPlay: (controller) => controller.repeat(reverse: true))
+          .shimmer(delay: 2000.ms, duration: 1500.ms, color: Colors.white24);
     }
+
+    return button;
   }
 }

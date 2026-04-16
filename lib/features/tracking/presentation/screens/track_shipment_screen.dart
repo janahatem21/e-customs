@@ -18,7 +18,6 @@ class TrackShipmentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
       body: SafeArea(
         child: Consumer<TrackingProvider>(
           builder: (context, provider, child) {
@@ -46,13 +45,10 @@ class TrackShipmentScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Shipment Journey',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.blackText,
-                          ),
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w800),
                         ),
                         TextButton.icon(
                           onPressed: () {
@@ -64,7 +60,7 @@ class TrackShipmentScreen extends StatelessWidget {
                           ),
                           label: const Text('Detailed Log'),
                           style: TextButton.styleFrom(
-                            foregroundColor: AppColors.subtitleColor,
+                            foregroundColor: AppColors.primary,
                             textStyle: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -98,23 +94,24 @@ class TrackShipmentScreen extends StatelessWidget {
                     child: VerificationCard(),
                   ).animate().fadeIn(duration: 500.ms, delay: 400.ms),
                 ] else
-                  const Padding(
-                    padding: EdgeInsets.only(top: 80),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 80),
                     child: Column(
                       children: [
-                        Icon(
+                        const Icon(
                           IconsaxPlusLinear.search_status,
                           size: 64,
                           color: AppColors.lightGrey,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Text(
                           'Enter a tracking number to see\nyour shipment details',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
                             color: AppColors.subtitleColor,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
+                            height: 1.5,
                           ),
                         ),
                       ],

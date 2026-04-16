@@ -9,6 +9,8 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:e_customs/features/documents/presentation/provider/upload_documents_provider.dart'
+    as _i1060;
 import 'package:e_customs/features/home/providers/home_provider.dart' as _i191;
 import 'package:e_customs/features/notifications/presentation/providers/notification_provider.dart'
     as _i106;
@@ -26,6 +28,9 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    gh.factory<_i1060.UploadDocumentsProvider>(
+      () => _i1060.UploadDocumentsProvider(),
+    );
     gh.factory<_i191.HomeProvider>(() => _i191.HomeProvider());
     gh.factory<_i106.NotificationProvider>(() => _i106.NotificationProvider());
     gh.lazySingleton<_i508.TrackingRepository>(

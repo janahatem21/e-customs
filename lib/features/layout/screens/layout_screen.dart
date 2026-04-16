@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routes/app_router.dart';
-import '../../documents/screens/upload_documents_screen.dart';
+import '../../documents/presentation/provider/upload_documents_provider.dart';
+import '../../documents/presentation/screens/upload_documents_screen.dart';
 import '../../home/screens/home_screen.dart';
 import '../../payments/screens/fees_screen.dart';
 import '../../profile/screens/profile_screen.dart';
@@ -27,10 +28,14 @@ class LayoutScreen extends StatelessWidget {
       create: (_) => getIt<TrackingProvider>(),
       child: const TrackShipmentScreen(),
     ),
-    const UploadDocumentsScreen(),
+    ChangeNotifierProvider(
+      create: (_) => getIt<UploadDocumentsProvider>(),
+      child: const UploadDocumentsScreen(),
+    ),
     const FeesScreen(),
     const ProfileScreen(),
   ];
+
 
   @override
   Widget build(BuildContext context) {

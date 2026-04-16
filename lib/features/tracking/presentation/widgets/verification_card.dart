@@ -12,9 +12,7 @@ class VerificationCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.gradientMid.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.1),
-        ),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
       ),
       child: Column(
         children: [
@@ -31,24 +29,20 @@ class VerificationCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Secure Customs Verification',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color: AppColors.blackText,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Your shipment is monitored and verified by E-Customs for regulatory compliance.',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 13,
-              height: 1.6,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: AppColors.subtitleColor,
-              fontWeight: FontWeight.w500,
+              height: 1.6,
             ),
           ),
         ],

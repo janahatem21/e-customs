@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
 
 class AppInput extends StatelessWidget {
   final String? label;
@@ -38,14 +37,7 @@ class AppInput extends StatelessWidget {
         if (label != null) ...[
           Padding(
             padding: const EdgeInsets.only(left: 4, bottom: 8),
-            child: Text(
-              label!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.blackText,
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
-              ),
-            ),
+            child: Text(label!, style: Theme.of(context).textTheme.labelMedium),
           ),
         ],
         TextFormField(
@@ -59,11 +51,7 @@ class AppInput extends StatelessWidget {
           onTapOutside: (event) {
             FocusManager.instance.primaryFocus?.unfocus();
           },
-          style: const TextStyle(
-            fontSize: 15,
-            color: AppColors.blackText,
-            fontWeight: FontWeight.w500,
-          ),
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 15),
           decoration: InputDecoration(
             hintText: hintText,
             errorText: errorText,

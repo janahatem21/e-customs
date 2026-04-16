@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_input.dart';
 import '../providers/tracking_provider.dart';
 
@@ -32,30 +33,13 @@ class TrackingSearchBar extends StatelessWidget {
               const SizedBox(width: 12),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4),
-                child: SizedBox(
-                  height: 54, // Sync with AppInput height
-                  child: ElevatedButton(
-                    onPressed: () {
-                      final provider = context.read<TrackingProvider>();
-                      provider.searchShipment(provider.searchController.text);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.white,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Text(
-                      'Track',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
+                child: AppButton(
+                  text: 'Track',
+                  fullWidth: false,
+                  onPressed: () {
+                    final provider = context.read<TrackingProvider>();
+                    provider.searchShipment(provider.searchController.text);
+                  },
                 ),
               ),
             ],

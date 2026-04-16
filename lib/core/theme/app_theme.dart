@@ -90,6 +90,11 @@ class AppTheme {
           color: AppColors.primary,
           height: 1.2,
         ),
+        titleMedium: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          color: AppColors.primary,
+        ),
         bodyLarge: TextStyle(
           fontSize: 16,
           color: AppColors.blackText,
@@ -100,11 +105,35 @@ class AppTheme {
           color: AppColors.subtitleColor,
           height: 1.6,
         ),
+        bodySmall: TextStyle(
+          fontSize: 12,
+          color: AppColors.subtitleColor,
+          height: 1.4,
+        ),
         labelLarge: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.w800,
           letterSpacing: 1.2,
           color: AppColors.primary,
+        ),
+        labelMedium: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: AppColors.primary,
+        ),
+      ),
+      dropdownMenuTheme: DropdownMenuThemeData(
+        textStyle: const TextStyle(
+          fontSize: 14,
+          color: AppColors.blackText,
+          fontWeight: FontWeight.w500,
+        ),
+        menuStyle: MenuStyle(
+          backgroundColor: WidgetStateProperty.all(AppColors.white),
+          elevation: WidgetStateProperty.all(4),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         ),
       ),
     );

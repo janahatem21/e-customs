@@ -7,11 +7,7 @@ class TrackingStepItem extends StatelessWidget {
   final TrackingStepModel step;
   final bool isLast;
 
-  const TrackingStepItem({
-    super.key,
-    required this.step,
-    required this.isLast,
-  });
+  const TrackingStepItem({super.key, required this.step, required this.isLast});
 
   @override
   Widget build(BuildContext context) {
@@ -27,19 +23,17 @@ class TrackingStepItem extends StatelessWidget {
                 height: 16,
                 decoration: BoxDecoration(
                   color: step.isCompleted ? AppColors.primary : AppColors.white,
-                  border: Border.all(
-                    color: AppColors.primary,
-                    width: 2,
-                  ),
+                  border: Border.all(color: AppColors.primary, width: 2),
                   shape: BoxShape.circle,
                 ),
-                child: step.isCompleted
-                    ? const Icon(
-                        Icons.check,
-                        size: 10,
-                        color: AppColors.white,
-                      )
-                    : null,
+                child:
+                    step.isCompleted
+                        ? const Icon(
+                          Icons.check,
+                          size: 10,
+                          color: AppColors.white,
+                        )
+                        : null,
               ),
               if (!isLast)
                 Expanded(
@@ -47,9 +41,10 @@ class TrackingStepItem extends StatelessWidget {
                     width: 2,
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     decoration: BoxDecoration(
-                      color: step.isCompleted 
-                          ? AppColors.primary 
-                          : AppColors.lightGrey,
+                      color:
+                          step.isCompleted
+                              ? AppColors.primary
+                              : AppColors.lightGrey,
                       borderRadius: BorderRadius.circular(1),
                     ),
                   ),
@@ -57,7 +52,7 @@ class TrackingStepItem extends StatelessWidget {
             ],
           ),
           const SizedBox(width: 16),
-          
+
           // Content
           Expanded(
             child: Padding(
@@ -70,16 +65,13 @@ class TrackingStepItem extends StatelessWidget {
                     children: [
                       Text(
                         step.title,
-                        style: const TextStyle(
-                          fontSize: 15,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w800,
-                          color: AppColors.blackText,
                         ),
                       ),
                       Text(
                         step.time,
-                        style: const TextStyle(
-                          fontSize: 12,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: AppColors.subtitleColor,
                           fontWeight: FontWeight.w600,
                         ),
@@ -97,8 +89,9 @@ class TrackingStepItem extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         step.location,
-                        style: const TextStyle(
-                          fontSize: 12,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.labelMedium?.copyWith(
                           color: AppColors.subtitleColor,
                           fontWeight: FontWeight.w700,
                         ),
@@ -108,11 +101,9 @@ class TrackingStepItem extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     step.details,
-                    style: TextStyle(
-                      fontSize: 13,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       height: 1.5,
                       color: AppColors.blackText.withValues(alpha: 0.7),
-                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 6),
