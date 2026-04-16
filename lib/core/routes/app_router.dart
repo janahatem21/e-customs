@@ -1,44 +1,78 @@
 import 'package:flutter/material.dart';
-
-import '../../features/auth/login/forgot_password_screen.dart';
-import '../../features/auth/login/login_screen.dart';
-import '../../features/auth/register/register_screen.dart';
+import 'package:provider/provider.dart';
+import '../../features/auth/login/screens/forgot_password_screen.dart';
+import '../../features/auth/login/screens/login_screen.dart';
+import '../../features/auth/register/screens/register_screen.dart';
+import '../../features/auth/providers/auth_provider.dart';
 import '../../features/customs/customs_form_screen.dart';
-import '../../features/documents/screens/upload_documents_screen.dart';
-import '../../features/home/screens/home_screen.dart';
-import '../../features/notifications/notifications_screen.dart';
-import '../../features/onboarding/onboarding_screen.dart';
-import '../../features/payments/screens/fees_screen.dart';
-import '../../features/profile/screens/profile_screen.dart';
+import '../../features/layout/providers/layout_provider.dart';
+import '../../features/layout/screens/layout_screen.dart';
+import '../../features/notifications/presentation/providers/notification_provider.dart';
+import '../../features/notifications/presentation/screens/notifications_screen.dart';
+import '../../features/onboarding/providers/onboarding_provider.dart';
+import '../../features/onboarding/screens/onboarding_screen.dart';
+import '../../features/tracking/presentation/providers/tracking_provider.dart';
+import '../../features/tracking/presentation/screens/detailed_log_screen.dart';
 import '../../features/splash/splash_screen.dart';
-import '../../features/tracking/screens/track_shipment_screen.dart';
+import '../../features/payments/presentation/screens/payment_checkout_screen.dart';
+import '../../features/payments/presentation/provider/fees_provider.dart';
+
+import '../../core/di/service_locator.dart';
 
 class AppRouter {
   static const String splash = '/';
   static const String onboarding = '/onboarding';
   static const String login = '/login';
   static const String register = '/register';
-  static const String home = '/home';
+  static const String layout = '/layout';
   static const String forgotPassword = '/forgot-password';
   static const String notifications = '/notifications';
-  static const String track = '/track';
-  static const String profile = '/profile';
   static const String customs = '/customs';
-  static const String documents = '/documents';
-  static const String fees = '/fees';
+  static const String detailedLog = '/detailed-log';
+  static const String checkout = '/checkout';
 
   static final Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
-    onboarding: (context) => const OnboardingScreen(),
-    login: (context) => const LoginScreen(),
-    register: (context) => const RegisterScreen(),
-    home: (context) => const HomeScreen(),
-    forgotPassword: (context) => const ForgotPasswordScreen(),
-    notifications: (context) => const NotificationsScreen(),
-    track: (context) => const TrackShipmentScreen(),
-    profile: (context) => const ProfileScreen(),
+    onboarding:
+        (context) => ChangeNotifierProvider(
+          create: (_) => OnboardingProvider(),
+          child: const OnboardingScreen(),
+        ),
+    login:
+        (context) => ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+          child: const LoginScreen(),
+        ),
+    register:
+        (context) => ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+          child: const RegisterScreen(),
+        ),
+    layout:
+        (context) => ChangeNotifierProvider(
+          create: (_) => LayoutProvider(),
+          child: const LayoutScreen(),
+        ),
+    forgotPassword:
+        (context) => ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+          child: const ForgotPasswordScreen(),
+        ),
+    notifications:
+        (context) => ChangeNotifierProvider(
+          create: (_) => getIt<NotificationProvider>(),
+          child: const NotificationsScreen(),
+        ),
     customs: (context) => const CustomsFormScreen(),
-    documents: (context) => const UploadDocumentsScreen(),
-    fees: (context) => const FeesScreen(),
+    detailedLog:
+        (context) => ChangeNotifierProvider.value(
+          value: getIt<TrackingProvider>(),
+          child: const DetailedLogScreen(),
+        ),
+        checkout:
+        (context) => ChangeNotifierProvider.value(
+          value: getIt<FeesProvider>(),
+          child: const PaymentCheckoutScreen(),
+        ),
   };
 }

@@ -17,4 +17,22 @@ class AppColors {
   static const blackText = Color(0xFF1E1E1E);
   static const greyText = Color(0xFF7A7A7A);
   static const lightGrey = Color(0xFFE5E5E5);
+
+  // Status
+  static const success = Color(0xFF4CAF50);
+  static const error = Color(0xFFE53935);
+  static const warning = Color(0xFFFFB300);
+  static const info = Color(0xFF2196F3);
+
+  // UI Elements & Payments
+  static const cardBackground = Color(0xFF1A1D1E);
+  static const cardChip = Color(0xFFFFD700);
+  static const surface = Color(0xFFF3F4F6);
+  static const border = Color(0xFFE5E7EB);
+  static const fieldFill = Colors.white;
+  
+  // Security (Premium Green)
+  static const securityGreen = Color(0xFF10B981);
+  static const securityGreenLight = Color(0xFFE6F9F3);
+  static const securityGreenDark = Color(0xFF065F46);
 }
