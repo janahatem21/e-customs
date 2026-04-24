@@ -25,7 +25,6 @@ import '../../features/payments/presentation/screens/payment_screen.dart';
 import '../../features/payments/presentation/screens/payment_success_screen.dart';
 import '../../features/payments/presentation/screens/qr_code_screen.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
-import '../../features/profile/presentation/screens/settings_screen.dart';
 
 import '../../core/di/service_locator.dart';
 
@@ -48,7 +47,6 @@ class AppRouter {
   static const String paymentSuccess = '/payment-success';
   static const String qrCode = '/qr-code';
   static const String editProfile = '/edit-profile';
-  static const String settings = '/settings';
 
   static final Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
@@ -104,11 +102,6 @@ class AppRouter {
         (context) => ChangeNotifierProvider.value(
           value: getIt<ProfileProvider>(),
           child: const EditProfileScreen(),
-        ),
-    settings:
-        (context) => ChangeNotifierProvider.value(
-          value: getIt<ProfileProvider>(),
-          child: const SettingsScreen(),
         ),
   };
 }

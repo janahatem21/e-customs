@@ -1,7 +1,8 @@
+import 'package:e_customs/core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
-@lazySingleton
+@injectable
 class ProfileProvider extends ChangeNotifier {
   String _userName = "John Doe";
   String _userEmail = "john.doe@customs.gov";
@@ -13,14 +14,45 @@ class ProfileProvider extends ChangeNotifier {
   bool get isVerified => _isVerified;
   String get avatarUrl => _avatarUrl;
 
-  void updateProfile({String? name, String? email}) {
-    if (name != null) _userName = name;
-    if (email != null) _userEmail = email;
+  bool _isSaving = false;
+  bool get isSaving => _isSaving;
+
+  int _shakeCounter = 0;
+  int get shakeCounter => _shakeCounter;
+
+  Future<bool> updateProfile({
+    required String name,
+    required String email,
+  }) async {
+    _isSaving = true;
     notifyListeners();
+
+    // Simulate API call
+    await Future.delayed(const Duration(seconds: 1));
+
+    _userName = name;
+    _userEmail = email;
+    _isSaving = false;
+    notifyListeners();
+    return true;
+  }
+
+  void triggerShake() {
+    _shakeCounter++;
+    notifyListeners();
+    // Reset after animation
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _shakeCounter = 0;
+      notifyListeners();
+    });
   }
 
   void logout(BuildContext context) {
     // Implement logout logic here
-    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRouter.login,
+      (route) => false,
+    );
   }
 }

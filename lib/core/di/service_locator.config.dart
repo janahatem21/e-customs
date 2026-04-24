@@ -46,8 +46,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i191.HomeProvider>(() => _i191.HomeProvider());
     gh.factory<_i106.NotificationProvider>(() => _i106.NotificationProvider());
     gh.factory<_i552.FeesProvider>(() => _i552.FeesProvider());
+    gh.factory<_i924.ProfileProvider>(() => _i924.ProfileProvider());
     gh.lazySingleton<_i1000.FirebaseServices>(() => _i1000.FirebaseServices());
-    gh.lazySingleton<_i924.ProfileProvider>(() => _i924.ProfileProvider());
     gh.lazySingleton<_i508.TrackingRepository>(
       () => _i508.TrackingRepositoryImpl(),
     );

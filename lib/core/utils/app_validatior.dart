@@ -46,4 +46,21 @@ class AppValidator {
     }
     return null;
   }
+
+  static String? validateRequired(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName is required';
+    }
+    return null;
+  }
+
+  static String? validateId(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'ID number is required';
+    }
+    if (value.trim().length < 8) {
+      return 'ID must be at least 8 characters';
+    }
+    return null;
+  }
 }
