@@ -6,6 +6,7 @@ class AppCard extends StatelessWidget {
   final VoidCallback? onTap;
   final EdgeInsetsGeometry padding;
   final double radius;
+  final Color? color;
 
   const AppCard({
     super.key,
@@ -13,19 +14,20 @@ class AppCard extends StatelessWidget {
     this.onTap,
     this.padding = const EdgeInsets.all(16),
     this.radius = 16,
+    this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.white,
+      color: color ?? AppColors.white,
       borderRadius: BorderRadius.circular(radius),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(radius),
         child: Ink(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: color ?? AppColors.white,
             borderRadius: BorderRadius.circular(radius),
             border: Border.all(color: AppColors.lightGrey),
             boxShadow: const [

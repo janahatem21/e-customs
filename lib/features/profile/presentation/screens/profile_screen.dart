@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:e_customs/core/constants/app_colors.dart';
+import 'package:e_customs/core/widgets/app_card.dart';
+import 'package:e_customs/core/routes/app_router.dart';
 import '../provider/profile_provider.dart';
 import '../widgets/profile_header.dart';
-import '../widgets/setting_item.dart';
-import '../../../../core/constants/app_colors.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -13,166 +14,143 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.gradientTop,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'Profile',
+          style: TextStyle(
+            color: AppColors.blackText,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.pushNamed(context, AppRouter.settings),
+            icon: const Icon(IconsaxPlusLinear.setting_2, color: AppColors.blackText),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         physics: const BouncingScrollPhysics(),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 32),
-            // Use Selector to rebuild only when basic profile info changes
-            Selector<ProfileProvider, (String, String, String, bool)>(
-              selector:
-                  (_, p) => (
-                    p.userName,
-                    p.userEmail,
-                    p.avatarUrl,
-                    p.isVerified,
-                  ),
-              builder: (context, data, _) {
+            const SizedBox(height: 16),
+            
+            // 1. User Info Section (Header)
+            Consumer<ProfileProvider>(
+              builder: (context, provider, _) {
                 return ProfileHeader(
-                  name: data.$1,
-                  email: data.$2,
-                  avatarUrl: data.$3,
-                  isVerified: data.$4,
-                  onEdit: () {},
+                  name: provider.userName,
+                  email: provider.userEmail,
+                  avatarUrl: provider.avatarUrl,
+                  isVerified: provider.isVerified,
+                  onEdit: () => Navigator.pushNamed(context, AppRouter.editProfile),
                 );
               },
-            ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1, end: 0),
-
-            const SizedBox(height: 40),
-
-            _buildSection(
-                  context,
-                  title: "ACCOUNT SETTINGS",
-                  items: [
-                    SettingItem(
-                      icon: IconsaxPlusLinear.personalcard,
-                      title: "Personal Information",
-                      subtitle: "Update your name, contact, and address",
-                      onTap: () {},
-                    ),
-                    SettingItem(
-                      icon: IconsaxPlusLinear.document_text_1,
-                      title: "My Declarations",
-                      subtitle: "View your customs filing history",
-                      onTap: () {},
-                    ),
-                    SettingItem(
-                      icon: IconsaxPlusLinear.card,
-                      title: "Payment Methods",
-                      subtitle: "Manage cards and digital wallets",
-                      onTap: () {},
-                    ),
-                  ],
-                )
-                .animate()
-                .fadeIn(duration: 350.ms, delay: 100.ms)
-                .slideY(begin: 0.05, end: 0),
-
-            const SizedBox(height: 24),
-
-            _buildSection(
-                  context,
-                  title: "SECURITY & PRIVACY",
-                  items: [
-                    SettingItem(
-                      icon: IconsaxPlusLinear.lock_1,
-                      title: "Password & PIN",
-                      subtitle: "Change your security credentials",
-                      onTap: () {},
-                    ),
-                    SettingItem(
-                      icon: IconsaxPlusLinear.shield_search,
-                      title: "Two-Factor Auth",
-                      subtitle: "Secure your account login",
-                      onTap: () {},
-                    ),
-                    SettingItem(
-                      icon: IconsaxPlusLinear.setting_2,
-                      title: "Preferences",
-                      subtitle: "Language, Currency, and Themes",
-                      onTap: () {},
-                    ),
-                  ],
-                )
-                .animate()
-                .fadeIn(duration: 350.ms, delay: 150.ms)
-                .slideY(begin: 0.05, end: 0),
-
-            const SizedBox(height: 24),
-
-            _buildSection(
-                  context,
-                  title: "SUPPORT & INFO",
-                  items: [
-                    SettingItem(
-                      icon: IconsaxPlusLinear.info_circle,
-                      title: "Help Center",
-                      subtitle: "FAQs and contact support",
-                      onTap: () {},
-                    ),
-                    SettingItem(
-                      icon: IconsaxPlusLinear.note_2,
-                      title: "Terms of Service",
-                      subtitle: "Legal and compliance documents",
-                      onTap: () {},
-                    ),
-                  ],
-                )
-                .animate()
-                .fadeIn(duration: 350.ms, delay: 200.ms)
-                .slideY(begin: 0.05, end: 0),
-
-            const SizedBox(height: 24),
-
-            SettingItem(
-                  icon: IconsaxPlusLinear.logout,
-                  title: "Log Out",
-                  subtitle: "Safely exit your account session",
-                  isDestructive: true,
-                  onTap: () => context.read<ProfileProvider>().logout(context),
-                )
-                .animate()
-                .fadeIn(duration: 350.ms, delay: 250.ms)
-                .slideY(begin: 0.05, end: 0),
-
+            ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1, end: 0),
+            
             const SizedBox(height: 32),
-            Text(
-              "E-CUSTOMS V2.4.0 (BUILD 892)",
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                letterSpacing: 1.5,
+            
+            // 2. Personal Information Section
+            const Text(
+              'Personal Information',
+              style: TextStyle(
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: AppColors.subtitleColor.withValues(alpha: 0.5),
+                color: AppColors.blackText,
               ),
-            ).animate().fadeIn(duration: 300.ms, delay: 300.ms),
-            const SizedBox(height: 40),
+            ).animate().fadeIn(delay: 200.ms),
+            
+            const SizedBox(height: 16),
+            
+            _buildInfoList().animate().fadeIn(delay: 300.ms).slideY(begin: 0.1, end: 0),
+            
+            const SizedBox(height: 32),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSection(
-    BuildContext context, {
-    required String title,
-    required List<Widget> items,
+  Widget _buildInfoList() {
+    return Consumer<ProfileProvider>(
+      builder: (context, provider, _) {
+        return Column(
+          children: [
+            _buildInfoCard(
+              label: 'Full Name',
+              value: provider.userName,
+              icon: IconsaxPlusLinear.user,
+            ),
+            const SizedBox(height: 12),
+            _buildInfoCard(
+              label: 'Passport Number / National ID',
+              value: 'P123456789', // Mock value
+              icon: IconsaxPlusLinear.card,
+            ),
+            const SizedBox(height: 12),
+            _buildInfoCard(
+              label: 'Email Address',
+              value: provider.userEmail,
+              icon: IconsaxPlusLinear.sms,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildInfoCard({
+    required String label,
+    required String value,
+    required IconData icon,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 12),
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: AppColors.subtitleColor,
-              letterSpacing: 1.2,
+    return AppCard(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, size: 20, color: AppColors.primary),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.greyText,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.blackText,
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-        ...items,
-      ],
+        ],
+      ),
     );
   }
 }

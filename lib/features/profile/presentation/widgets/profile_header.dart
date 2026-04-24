@@ -30,7 +30,7 @@ class ProfileHeader extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 2),
+                border: Border.all(color: AppColors.primary.withOpacity(0.2), width: 2),
               ),
               child: CircleAvatar(
                 radius: 50,
@@ -74,7 +74,7 @@ class ProfileHeader extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: AppColors.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -93,23 +93,11 @@ class ProfileHeader extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 200,
+              width: 240, // Increased width slightly for a more prominent button
               child: AppButton(
                 text: "Edit Profile",
                 onPressed: onEdit,
                 variant: AppButtonVariant.primary,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.lightGrey),
-              ),
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(IconsaxPlusLinear.notification, color: AppColors.primary),
               ),
             ),
           ],

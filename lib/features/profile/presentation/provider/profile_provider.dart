@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
-@injectable
+@lazySingleton
 class ProfileProvider extends ChangeNotifier {
   String _userName = "John Doe";
   String _userEmail = "john.doe@customs.gov";

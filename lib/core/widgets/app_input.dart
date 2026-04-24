@@ -12,6 +12,7 @@ class AppInput extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final String? Function(String?)? validator;
   final bool enabled;
+  final bool autofocus;
 
   const AppInput({
     super.key,
@@ -26,6 +27,7 @@ class AppInput extends StatelessWidget {
     this.onChanged,
     this.validator,
     this.enabled = true,
+    this.autofocus = false,
   });
 
   @override
@@ -48,6 +50,7 @@ class AppInput extends StatelessWidget {
           validator: validator,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           enabled: enabled,
+          autofocus: autofocus,
           onTapOutside: (event) {
             FocusManager.instance.primaryFocus?.unfocus();
           },
