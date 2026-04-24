@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
+import '../../../providers/auth_provider.dart';
+import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/constants/app_strings.dart';
 
 class TermsCheckbox extends StatelessWidget {
   const TermsCheckbox({super.key});
@@ -28,9 +28,14 @@ class TermsCheckbox extends StatelessWidget {
                 width: 1.5,
               ),
             ),
-            child: isChecked
-                ? const Icon(Icons.check_rounded, size: 14, color: Colors.white)
-                : null,
+            child:
+                isChecked
+                    ? const Icon(
+                      Icons.check_rounded,
+                      size: 14,
+                      color: Colors.white,
+                    )
+                    : null,
           ),
         ),
         const SizedBox(width: 12),
@@ -47,16 +52,11 @@ class TermsCheckbox extends StatelessWidget {
                 ),
                 TextSpan(
                   text: AppStrings.termsDescription,
-                  style: TextStyle(
-                    color: AppColors.subtitleColor,
-                  ),
+                  style: TextStyle(color: AppColors.subtitleColor),
                 ),
               ],
             ),
-            style: TextStyle(
-              fontSize: 12,
-              height: 1.5,
-            ),
+            style: TextStyle(fontSize: 12, height: 1.5),
           ),
         ),
       ],

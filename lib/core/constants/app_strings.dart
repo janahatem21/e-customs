@@ -1,8 +1,7 @@
 class AppStrings {
   static const appName = 'E-CUSTOMS';
   static const splashLoading = 'Initializing secure session...';
-  static const splashFooter =
-      'OFFICIAL CUSTOMS & BORDER PROTECTION SERVICE';
+  static const splashFooter = 'OFFICIAL CUSTOMS & BORDER PROTECTION SERVICE';
 
   static const onboardingTitle1 = 'Simplify Your\nCustoms Experience';
   static const onboardingDesc1 =
@@ -35,7 +34,7 @@ class AppStrings {
   static const forgotPassword = 'Forgot Password?';
   static const signIn = 'Sign In';
   static const orContinueWith = 'OR CONTINUE WITH';
-  static const google = 'Google';
+  static const google = 'Continue with Google';
   static const github = 'Github';
   static const secureEncryption = 'SECURE GOVERNMENT 256-BIT ENCRYPTION';
   static const noAccount = "Don't have an account? ";

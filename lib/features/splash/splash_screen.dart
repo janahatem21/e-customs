@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
@@ -61,14 +62,20 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward().then((_) {
       if (mounted) {
-        final bool onboardingComplete = SharedPreferencesService.getBool(
-          key: AppConstants.onBoardingKey,
-        );
+        final User? user = FirebaseAuth.instance.currentUser;
 
-        Navigator.pushReplacementNamed(
-          context,
-          onboardingComplete ? AppRouter.login : AppRouter.onboarding,
-        );
+        if (user != null) {
+          Navigator.pushReplacementNamed(context, AppRouter.layout);
+        } else {
+          final bool onboardingComplete = SharedPreferencesService.getBool(
+            key: AppConstants.onBoardingKey,
+          );
+
+          Navigator.pushReplacementNamed(
+            context,
+            onboardingComplete ? AppRouter.login : AppRouter.onboarding,
+          );
+        }
       }
     });
   }
