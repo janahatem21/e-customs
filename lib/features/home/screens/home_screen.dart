@@ -1,7 +1,6 @@
 import 'package:e_customs/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:iconsax_plus/iconsax_plus.dart';
 import '../widgets/home_greeting_section.dart';
 import '../widgets/quick_actions_section.dart';
 
@@ -61,7 +60,7 @@ class HomeScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withOpacity(0.2),
+              color: AppColors.primary.withValues(alpha: 0.2),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -81,7 +80,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white10,
                     borderRadius: BorderRadius.circular(8),
@@ -115,11 +117,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildStatDivider() {
-    return Container(
-      height: 30,
-      width: 1,
-      color: Colors.white12,
-    );
+    return Container(height: 30, width: 1, color: Colors.white12);
   }
 
   Widget _buildStatItem(String value, String label, Color color) {

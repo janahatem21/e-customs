@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/routes/app_router.dart';
+import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/constants/app_strings.dart';
+import '../../../../../../core/routes/app_router.dart';
 
 class SignUpPrompt extends StatelessWidget {
   const SignUpPrompt({super.key});
@@ -22,10 +22,10 @@ class SignUpPrompt extends StatelessWidget {
             Text(
               AppStrings.secureEncryption.toUpperCase(),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: AppColors.subtitleColor,
-                    fontSize: 9,
-                    fontWeight: FontWeight.w700,
-                  ),
+                color: AppColors.subtitleColor,
+                fontSize: 9,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ],
         ),
@@ -35,9 +35,9 @@ class SignUpPrompt extends StatelessWidget {
           child: RichText(
             text: TextSpan(
               text: AppStrings.noAccount,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontSize: 14,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontSize: 14),
               children: [
                 TextSpan(
                   text: AppStrings.signUpNow,

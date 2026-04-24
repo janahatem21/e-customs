@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
+import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/constants/app_strings.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({super.key});
@@ -33,9 +33,9 @@ class LoginHeader extends StatelessWidget {
         const SizedBox(height: 24),
         Text(
           AppStrings.welcomeBack,
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                fontSize: 26,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineLarge?.copyWith(fontSize: 26),
         ),
         const SizedBox(height: 8),
         Padding(

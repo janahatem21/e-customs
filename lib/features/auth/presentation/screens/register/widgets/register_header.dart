@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
+import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/constants/app_strings.dart';
 
 class RegisterHeader extends StatelessWidget {
   const RegisterHeader({super.key});
@@ -34,9 +34,9 @@ class RegisterHeader extends StatelessWidget {
         const SizedBox(height: 24),
         Text(
           AppStrings.createAccount,
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                fontSize: 24,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineLarge?.copyWith(fontSize: 24),
         ),
         const SizedBox(height: 8),
         Text(

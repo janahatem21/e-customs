@@ -1,10 +1,10 @@
 import 'package:e_customs/features/payments/presentation/screens/payment_checkout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../features/auth/login/screens/forgot_password_screen.dart';
-import '../../features/auth/login/screens/login_screen.dart';
-import '../../features/auth/register/screens/register_screen.dart';
-import '../../features/auth/providers/auth_provider.dart';
+import '../../features/auth/presentation/screens/login/screens/forgot_password_screen.dart';
+import '../../features/auth/presentation/screens/login/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/register/screens/register_screen.dart';
+import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/customs/customs_form_screen.dart';
 import '../../features/layout/providers/layout_provider.dart';
 import '../../features/layout/screens/layout_screen.dart';
@@ -58,13 +58,13 @@ class AppRouter {
           child: const OnboardingScreen(),
         ),
     login:
-        (context) => ChangeNotifierProvider(
-          create: (_) => AuthProvider(),
+        (context) => ChangeNotifierProvider.value(
+          value: getIt<AuthProvider>(),
           child: const LoginScreen(),
         ),
     register:
-        (context) => ChangeNotifierProvider(
-          create: (_) => AuthProvider(),
+        (context) => ChangeNotifierProvider.value(
+          value: getIt<AuthProvider>(),
           child: const RegisterScreen(),
         ),
     layout:
@@ -73,8 +73,8 @@ class AppRouter {
           child: const LayoutScreen(),
         ),
     forgotPassword:
-        (context) => ChangeNotifierProvider(
-          create: (_) => AuthProvider(),
+        (context) => ChangeNotifierProvider.value(
+          value: getIt<AuthProvider>(),
           child: const ForgotPasswordScreen(),
         ),
     notifications:

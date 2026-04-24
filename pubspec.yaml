@@ -19,6 +19,11 @@ dependencies:
   skeletonizer: 
   get_it: 
   injectable: 
+  firebase_core: ^4.7.0
+  firebase_auth: ^6.4.0
+  cloud_firestore: ^6.3.0
+  google_sign_in: ^7.2.0
+  flutter_dotenv: ^6.0.1
 
 
 dev_dependencies:
@@ -36,3 +41,4 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - .env

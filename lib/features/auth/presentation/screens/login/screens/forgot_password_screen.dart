@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/utils/app_validatior.dart';
-import '../../../../core/widgets/app_input.dart';
-import '../../providers/auth_provider.dart';
+import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/utils/app_validatior.dart';
+import '../../../../../../core/widgets/app_input.dart';
+import '../../../providers/auth_provider.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
