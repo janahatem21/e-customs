@@ -1,3 +1,4 @@
+import 'package:e_customs/core/models/user_model.dart';
 import 'package:e_customs/features/payments/presentation/screens/payment_checkout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -98,10 +99,12 @@ class AppRouter {
     payment: (context) => const PaymentScreen(),
     paymentSuccess: (context) => const PaymentSuccessScreen(),
     qrCode: (context) => const QRCodeScreen(),
-    editProfile:
-        (context) => ChangeNotifierProvider.value(
-          value: getIt<ProfileProvider>(),
-          child: const EditProfileScreen(),
-        ),
+    editProfile: (context) {
+      final user = ModalRoute.of(context)?.settings.arguments as UserModel?;
+      return ChangeNotifierProvider.value(
+        value: getIt<ProfileProvider>(),
+        child: EditProfileScreen(user: user),
+      );
+    },
   };
 }

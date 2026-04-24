@@ -32,8 +32,11 @@ class ProfileScreen extends StatelessWidget {
                     email: provider.userEmail,
                     isVerified: provider.isVerified,
                     onEdit:
-                        () =>
-                            Navigator.pushNamed(context, AppRouter.editProfile),
+                        () => Navigator.pushNamed(
+                          context,
+                          AppRouter.editProfile,
+                          arguments: provider.user,
+                        ),
                   );
                 },
               ),
@@ -131,7 +134,7 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 12),
             _buildInfoCard(
               label: 'Passport Number / National ID',
-              value: 'P123456789', // Mock value
+              value: provider.passportId ?? 'Not set',
               icon: IconsaxPlusLinear.card,
             ),
             const SizedBox(height: 12),
