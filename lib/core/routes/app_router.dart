@@ -1,3 +1,4 @@
+import 'package:e_customs/core/models/user_model.dart';
 import 'package:e_customs/features/payments/presentation/screens/payment_checkout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,6 @@ import '../../features/payments/presentation/screens/payment_screen.dart';
 import '../../features/payments/presentation/screens/payment_success_screen.dart';
 import '../../features/payments/presentation/screens/qr_code_screen.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
-import '../../features/profile/presentation/screens/settings_screen.dart';
 
 import '../../core/di/service_locator.dart';
 
@@ -48,7 +48,6 @@ class AppRouter {
   static const String paymentSuccess = '/payment-success';
   static const String qrCode = '/qr-code';
   static const String editProfile = '/edit-profile';
-  static const String settings = '/settings';
 
   static final Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
@@ -100,15 +99,12 @@ class AppRouter {
     payment: (context) => const PaymentScreen(),
     paymentSuccess: (context) => const PaymentSuccessScreen(),
     qrCode: (context) => const QRCodeScreen(),
-    editProfile:
-        (context) => ChangeNotifierProvider.value(
-          value: getIt<ProfileProvider>(),
-          child: const EditProfileScreen(),
-        ),
-    settings:
-        (context) => ChangeNotifierProvider.value(
-          value: getIt<ProfileProvider>(),
-          child: const SettingsScreen(),
-        ),
+    editProfile: (context) {
+      final user = ModalRoute.of(context)?.settings.arguments as UserModel?;
+      return ChangeNotifierProvider.value(
+        value: getIt<ProfileProvider>(),
+        child: EditProfileScreen(user: user),
+      );
+    },
   };
 }

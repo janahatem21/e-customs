@@ -4,12 +4,14 @@ class UserModel {
   final String id;
   final String name;
   final String email;
+  final String? passportId;
   final DateTime? createdAt;
 
   UserModel({
     required this.id,
     required this.name,
     required this.email,
+    this.passportId,
     this.createdAt,
   });
 
@@ -18,9 +20,11 @@ class UserModel {
       id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
-      createdAt: json['createdAt'] != null 
-          ? DateTime.parse(json['createdAt'] as String)
-          : null,
+      passportId: json['passportId'] as String?,
+      createdAt:
+          json['createdAt'] != null
+              ? DateTime.parse(json['createdAt'] as String)
+              : null,
     );
   }
 
@@ -29,18 +33,24 @@ class UserModel {
       'id': id,
       'name': name,
       'email': email,
+      'passportId': passportId,
       'createdAt': createdAt?.toIso8601String(),
     };
   }
 
-  factory UserModel.fromFirestore(Map<String, dynamic> json, String documentId) {
+  factory UserModel.fromFirestore(
+    Map<String, dynamic> json,
+    String documentId,
+  ) {
     return UserModel(
       id: documentId,
       name: json['name'] as String? ?? '',
       email: json['email'] as String? ?? '',
-      createdAt: json['createdAt'] != null 
-          ? (json['createdAt'] as Timestamp).toDate()
-          : null,
+      passportId: json['passportId'] as String?,
+      createdAt:
+          json['createdAt'] != null
+              ? (json['createdAt'] as Timestamp).toDate()
+              : null,
     );
   }
 
@@ -48,7 +58,11 @@ class UserModel {
     return {
       'name': name,
       'email': email,
-      'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
+      'passportId': passportId,
+      'createdAt':
+          createdAt != null
+              ? Timestamp.fromDate(createdAt!)
+              : FieldValue.serverTimestamp(),
     };
   }
 }

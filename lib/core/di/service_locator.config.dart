@@ -24,6 +24,10 @@ import 'package:e_customs/features/notifications/presentation/providers/notifica
     as _i106;
 import 'package:e_customs/features/payments/presentation/provider/fees_provider.dart'
     as _i552;
+import 'package:e_customs/features/profile/data/datasources/profile_remote_datasource.dart'
+    as _i398;
+import 'package:e_customs/features/profile/data/repositories/profile_repository.dart'
+    as _i682;
 import 'package:e_customs/features/profile/presentation/provider/profile_provider.dart'
     as _i924;
 import 'package:e_customs/features/tracking/data/repositories/tracking_repository.dart'
@@ -47,7 +51,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i106.NotificationProvider>(() => _i106.NotificationProvider());
     gh.factory<_i552.FeesProvider>(() => _i552.FeesProvider());
     gh.lazySingleton<_i1000.FirebaseServices>(() => _i1000.FirebaseServices());
-    gh.lazySingleton<_i924.ProfileProvider>(() => _i924.ProfileProvider());
     gh.lazySingleton<_i508.TrackingRepository>(
       () => _i508.TrackingRepositoryImpl(),
     );
@@ -57,16 +60,28 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i479.UserProvider>(
       () => _i479.UserProvider(gh<_i1000.FirebaseServices>()),
     );
+    gh.lazySingleton<_i398.ProfileRemoteDataSource>(
+      () => _i398.ProfileRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
+    );
     gh.factory<_i473.TrackingProvider>(
       () => _i473.TrackingProvider(gh<_i508.TrackingRepository>()),
     );
     gh.lazySingleton<_i678.AuthRepository>(
       () => _i678.AuthRepositoryImpl(gh<_i263.AuthRemoteDataSource>()),
     );
+    gh.lazySingleton<_i682.ProfileRepository>(
+      () => _i682.ProfileRepositoryImpl(gh<_i398.ProfileRemoteDataSource>()),
+    );
     gh.factory<_i523.AuthProvider>(
       () => _i523.AuthProvider(
         gh<_i678.AuthRepository>(),
         gh<_i479.UserProvider>(),
+      ),
+    );
+    gh.factory<_i924.ProfileProvider>(
+      () => _i924.ProfileProvider(
+        gh<_i682.ProfileRepository>(),
+        gh<_i678.AuthRepository>(),
       ),
     );
     return this;
