@@ -2,10 +2,11 @@ import 'package:injectable/injectable.dart';
 import '../datasources/auth_remote_datasource.dart';
 import '../../../../core/models/user_model.dart';
 
-abstract class AuthRepository {
+abstract interface class AuthRepository {
   Future<UserModel> register(String name, String email, String password);
   Future<UserModel> login(String email, String password);
   Future<UserModel> signInWithGoogle();
+  Future<void> sendPasswordResetEmail(String email);
   Future<void> logout();
 }
 
@@ -28,6 +29,11 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<UserModel> signInWithGoogle() {
     return _remoteDataSource.signInWithGoogle();
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) {
+    return _remoteDataSource.sendPasswordResetEmail(email);
   }
 
   @override

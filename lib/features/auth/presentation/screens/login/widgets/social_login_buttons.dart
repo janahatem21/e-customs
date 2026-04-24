@@ -33,46 +33,29 @@ class SocialLoginButtons extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 24),
-        Row(
-          children: [
-            Expanded(
-              child: _SocialButton(
-                onPressed: authProvider.isLoading
-                    ? () {}
-                    : () async {
-                      try {
-                        await authProvider.signInWithGoogle();
-                        if (context.mounted) {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            AppRouter.layout,
-                          );
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(e.toString())),
-                          );
-                        }
+        _SocialButton(
+          onPressed:
+              authProvider.isLoading
+                  ? () {}
+                  : () async {
+                    try {
+                      await authProvider.signInWithGoogle();
+                      if (context.mounted) {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          AppRouter.layout,
+                        );
                       }
-                    },
-                icon: AppAssets.googleLogo,
-                label: AppStrings.google,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _SocialButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Github Login not implemented')),
-                  );
-                },
-                icon: AppAssets.githubLogo,
-                label: AppStrings.github,
-              ),
-            ),
-          ],
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(e.toString())));
+                      }
+                    }
+                  },
+          icon: AppAssets.googleLogo,
+          label: AppStrings.google,
         ),
       ],
     );
@@ -94,24 +77,12 @@ class _SocialButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        side: const BorderSide(color: AppColors.lightGrey),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(icon, height: 20),
           const SizedBox(width: 10),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: AppColors.blackText,
-            ),
-          ),
+          Text(label),
         ],
       ),
     );

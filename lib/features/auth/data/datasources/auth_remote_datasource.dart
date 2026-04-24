@@ -8,6 +8,7 @@ abstract class AuthRemoteDataSource {
   Future<UserModel> register(String name, String email, String password);
   Future<UserModel> login(String email, String password);
   Future<UserModel> signInWithGoogle();
+  Future<void> sendPasswordResetEmail(String email);
   Future<void> logout();
 }
 
@@ -115,6 +116,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
         return userModel;
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _firebaseServices.auth.sendPasswordResetEmail(email: email);
     } catch (e) {
       rethrow;
     }

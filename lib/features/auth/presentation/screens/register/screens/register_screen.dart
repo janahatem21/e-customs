@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +12,7 @@ import '../../../providers/auth_provider.dart';
 import '../widgets/password_strength_card.dart';
 import '../widgets/register_footer.dart';
 import '../widgets/register_header.dart';
+import '../../../../../../core/widgets/app_button.dart';
 import '../widgets/terms_checkbox.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -168,60 +171,40 @@ class _RegisterFormState extends State<_RegisterForm> {
           const SizedBox(height: 24),
           const TermsCheckbox(),
           const SizedBox(height: 32),
-          ElevatedButton(
-                onPressed:
-                    authProvider.isLoading
-                        ? null
-                        : () async {
-                          if (_formKey.currentState!.validate()) {
-                            if (!authProvider.agreeToTerms) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please agree to total terms'),
-                                ),
-                              );
-                              return;
-                            }
+          AppButton(
+            text: AppStrings.registerAccount,
+            isLoading: authProvider.isLoading,
+            onPressed: () async {
+              if (_formKey.currentState!.validate()) {
+                if (!authProvider.agreeToTerms) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please agree to terms and conditions'),
+                    ),
+                  );
+                  return;
+                }
 
-                            try {
-                              await authProvider.register(
-                                _nameController.text.trim(),
-                                _emailController.text.trim(),
-                                _passwordController.text,
-                              );
-                              if (mounted) {
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  AppRouter.layout,
-                                );
-                              }
-                            } catch (e) {
-                              if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(e.toString())),
-                                );
-                              }
-                            }
-                          }
-                        },
-                child:
-                    authProvider.isLoading
-                        ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                        : const Text(AppStrings.registerAccount),
-              )
-              .animate(onPlay: (controller) => controller.repeat(reverse: true))
-              .shimmer(
-                delay: 2000.ms,
-                duration: 1500.ms,
-                color: Colors.white24,
-              ),
+                try {
+                  await authProvider.register(
+                    _nameController.text.trim(),
+                    _emailController.text.trim(),
+                    _passwordController.text,
+                  );
+                  if (mounted) {
+                    Navigator.pushReplacementNamed(context, AppRouter.layout);
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(e.toString())));
+                  }
+                }
+              }
+            },
+            shimmer: true,
+          ),
         ],
       ),
     );

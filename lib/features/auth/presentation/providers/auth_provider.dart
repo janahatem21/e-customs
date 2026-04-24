@@ -78,9 +78,13 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> forgotPassword(String email) async {
     setLoading(true);
-    // TODO: Implement forgot password in repository
-    await Future.delayed(const Duration(seconds: 2));
-    setLoading(false);
+    try {
+      await _authRepository.sendPasswordResetEmail(email);
+    } catch (e) {
+      rethrow;
+    } finally {
+      setLoading(false);
+    }
   }
 
   Future<void> logout() async {

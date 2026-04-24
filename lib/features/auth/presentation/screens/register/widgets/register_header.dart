@@ -11,24 +11,24 @@ class RegisterHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          width: 70,
-          height: 70,
-          padding: const EdgeInsets.all(16),
+          width: 80,
+          height: 80,
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: AppColors.primary.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.15),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.person_add_rounded,
-              size: 24,
-              color: Colors.white,
-            ),
+          child: const Icon(
+            Icons.person_add_rounded,
+            size: 40,
+            color: Colors.white,
           ),
         ),
         const SizedBox(height: 24),
@@ -36,7 +36,7 @@ class RegisterHeader extends StatelessWidget {
           AppStrings.createAccount,
           style: Theme.of(
             context,
-          ).textTheme.headlineLarge?.copyWith(fontSize: 24),
+          ).textTheme.headlineLarge?.copyWith(fontSize: 26),
         ),
         const SizedBox(height: 8),
         Text(
