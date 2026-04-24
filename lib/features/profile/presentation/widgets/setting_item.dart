@@ -28,7 +28,7 @@ class SettingItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.05),
+            color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -41,8 +41,8 @@ class SettingItem extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: isDestructive 
-                ? Colors.red.withValues(alpha: 0.1) 
-                : AppColors.primary.withValues(alpha: 0.1),
+                ? Colors.red.withOpacity(0.1) 
+                : AppColors.primary.withOpacity(0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -64,7 +64,7 @@ class SettingItem extends StatelessWidget {
         ),
         trailing: Icon(
           Icons.chevron_right_rounded,
-          color: isDestructive ? Colors.red.withValues(alpha: 0.5) : AppColors.lightGrey,
+          color: isDestructive ? Colors.red.withOpacity(0.5) : AppColors.lightGrey,
         ),
       ),
     );
