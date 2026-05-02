@@ -23,8 +23,8 @@ Future<void> main() async {
   configureDependencies();
 
   runApp(
-    MultiProvider(
-      providers: [ChangeNotifierProvider.value(value: getIt<UserProvider>())],
+    ChangeNotifierProvider(
+      create: (_) => getIt<UserProvider>(),
       child: const ECustomsApp(),
     ),
   );
