@@ -1,3 +1,4 @@
+import 'package:e_customs/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import '../../domain/entities/item_entity.dart';
@@ -25,15 +26,8 @@ class AddItemProvider extends ChangeNotifier {
   AddItemState _state = AddItemState.idle;
   String? _errorMessage;
 
-  final List<String> categories = [
-    'Mobile',
-    'Laptop',
-    'Clothing',
-    'Electronics',
-    'Cosmetics',
-  ];
-
-  final List<String> currencies = ['USD', 'EUR', 'EGP'];
+  final List<String> categories = AppConstants.categories;
+  final List<String> currencies = AppConstants.currencies;
 
   // Getters
   int get currentStep => _currentStep;

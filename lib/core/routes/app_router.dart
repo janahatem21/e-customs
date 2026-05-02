@@ -1,6 +1,7 @@
 import 'package:e_customs/core/models/user_model.dart';
 import 'package:e_customs/features/customs/presentation/provider/add_item_provider.dart';
 import 'package:e_customs/features/customs/presentation/provider/declaration_provider.dart';
+import 'package:e_customs/features/customs/presentation/provider/scan_invoice_provider.dart';
 import 'package:e_customs/features/customs/presentation/screens/create_declaration_screen.dart';
 import 'package:e_customs/features/payments/presentation/screens/payment_checkout_screen.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +110,14 @@ class AppRouter {
           value: getIt<DeclarationProvider>(),
           child: const CreateDeclarationScreen(),
         ),
-    scanInvoice: (context) => const ScanInvoiceScreen(),
+    scanInvoice:
+        (context) => MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => getIt<ScanInvoiceProvider>()),
+            ChangeNotifierProvider.value(value: getIt<DeclarationProvider>()),
+          ],
+          child: const ScanInvoiceScreen(),
+        ),
     declaration: (context) => const DeclarationScreen(),
     calculateCustoms: (context) => const CalculateCustomsScreen(),
     payment: (context) => const PaymentScreen(),

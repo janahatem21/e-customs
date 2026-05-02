@@ -24,7 +24,8 @@ class AddItemCurrencyDropdown extends StatelessWidget {
           ),
         ),
         Selector<AddItemProvider, (String, List<String>)>(
-          selector: (_, provider) => (provider.selectedCurrency, provider.currencies),
+          selector:
+              (_, provider) => (provider.selectedCurrency, provider.currencies),
           builder: (context, data, child) {
             final selectedCurrency = data.$1;
             final currencies = data.$2;
@@ -35,25 +36,28 @@ class AddItemCurrencyDropdown extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.lightGrey.withValues(alpha: 0.5)),
+                border: Border.all(
+                  color: AppColors.lightGrey.withValues(alpha: 0.5),
+                ),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   value: selectedCurrency,
                   isExpanded: true,
                   icon: const Icon(IconsaxPlusLinear.arrow_down_1, size: 18),
-                  items: currencies.map((String currency) {
-                    return DropdownMenuItem<String>(
-                      value: currency,
-                      child: Text(
-                        currency,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.blackText,
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                  items:
+                      currencies.map((String currency) {
+                        return DropdownMenuItem<String>(
+                          value: currency,
+                          child: Text(
+                            currency,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColors.blackText,
+                            ),
+                          ),
+                        );
+                      }).toList(),
                   onChanged: (String? newValue) {
                     if (newValue != null) {
                       context.read<AddItemProvider>().setCurrency(newValue);

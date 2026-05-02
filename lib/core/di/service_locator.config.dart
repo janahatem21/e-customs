@@ -11,6 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:e_customs/core/providers/user_provider.dart' as _i479;
 import 'package:e_customs/core/services/firebase_services.dart' as _i1000;
+import 'package:e_customs/core/services/ocr_service.dart' as _i693;
 import 'package:e_customs/features/auth/data/datasources/auth_remote_datasource.dart'
     as _i263;
 import 'package:e_customs/features/auth/data/repositories/auth_repository.dart'
@@ -21,24 +22,34 @@ import 'package:e_customs/features/customs/data/datasources/declarations_remote_
     as _i577;
 import 'package:e_customs/features/customs/data/datasources/items_remote_data_source.dart'
     as _i112;
+import 'package:e_customs/features/customs/data/datasources/ocr_remote_data_source.dart'
+    as _i80;
 import 'package:e_customs/features/customs/data/repositories/declarations_repository_impl.dart'
     as _i580;
 import 'package:e_customs/features/customs/data/repositories/items_repository_impl.dart'
     as _i341;
+import 'package:e_customs/features/customs/data/repositories/ocr_repository_impl.dart'
+    as _i961;
 import 'package:e_customs/features/customs/domain/repositories/declarations_repository.dart'
     as _i872;
 import 'package:e_customs/features/customs/domain/repositories/items_repository.dart'
     as _i53;
+import 'package:e_customs/features/customs/domain/repositories/ocr_repository.dart'
+    as _i511;
 import 'package:e_customs/features/customs/domain/usecases/add_item_usecase.dart'
     as _i1062;
 import 'package:e_customs/features/customs/domain/usecases/create_declaration_usecase.dart'
     as _i98;
 import 'package:e_customs/features/customs/domain/usecases/get_active_declaration_usecase.dart'
     as _i590;
+import 'package:e_customs/features/customs/domain/usecases/scan_invoice_usecase.dart'
+    as _i523;
 import 'package:e_customs/features/customs/presentation/provider/add_item_provider.dart'
     as _i977;
 import 'package:e_customs/features/customs/presentation/provider/declaration_provider.dart'
     as _i125;
+import 'package:e_customs/features/customs/presentation/provider/scan_invoice_provider.dart'
+    as _i777;
 import 'package:e_customs/features/documents/presentation/provider/upload_documents_provider.dart'
     as _i1060;
 import 'package:e_customs/features/home/providers/home_provider.dart' as _i191;
@@ -73,6 +84,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i106.NotificationProvider>(() => _i106.NotificationProvider());
     gh.factory<_i552.FeesProvider>(() => _i552.FeesProvider());
     gh.lazySingleton<_i1000.FirebaseServices>(() => _i1000.FirebaseServices());
+    gh.lazySingleton<_i693.OcrService>(() => _i693.OcrService());
     gh.lazySingleton<_i112.ItemsRemoteDataSource>(
       () => _i112.ItemsRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
     );
@@ -91,6 +103,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i577.DeclarationsRemoteDataSource>(
       () =>
           _i577.DeclarationsRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
+    );
+    gh.lazySingleton<_i80.OcrRemoteDataSource>(
+      () => _i80.OcrRemoteDataSourceImpl(gh<_i693.OcrService>()),
     );
     gh.factory<_i53.ItemsRepository>(
       () => _i341.ItemsRepositoryImpl(gh<_i112.ItemsRemoteDataSource>()),
@@ -112,6 +127,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i678.AuthRepository>(
       () => _i678.AuthRepositoryImpl(gh<_i263.AuthRemoteDataSource>()),
     );
+    gh.lazySingleton<_i511.OcrRepository>(
+      () => _i961.OcrRepositoryImpl(gh<_i80.OcrRemoteDataSource>()),
+    );
     gh.lazySingleton<_i682.ProfileRepository>(
       () => _i682.ProfileRepositoryImpl(gh<_i398.ProfileRemoteDataSource>()),
     );
@@ -132,6 +150,15 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i125.DeclarationProvider(
         gh<_i590.GetActiveDeclarationUseCase>(),
         gh<_i98.CreateDeclarationUseCase>(),
+      ),
+    );
+    gh.factory<_i523.ScanInvoiceUseCase>(
+      () => _i523.ScanInvoiceUseCase(gh<_i511.OcrRepository>()),
+    );
+    gh.factory<_i777.ScanInvoiceProvider>(
+      () => _i777.ScanInvoiceProvider(
+        gh<_i523.ScanInvoiceUseCase>(),
+        gh<_i1062.AddItemUseCase>(),
       ),
     );
     gh.factory<_i924.ProfileProvider>(

@@ -25,17 +25,20 @@ class AddItemCategoryDropdown extends StatelessWidget {
           ),
         ),
         Selector<AddItemProvider, (String?, List<String>)>(
-          selector: (_, provider) => (provider.selectedCategory, provider.categories),
+          selector:
+              (_, provider) => (provider.selectedCategory, provider.categories),
           builder: (context, data, child) {
             final selectedCategory = data.$1;
             final categories = data.$2;
-            
+
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.lightGrey.withValues(alpha: 0.5)),
+                border: Border.all(
+                  color: AppColors.lightGrey.withValues(alpha: 0.5),
+                ),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
@@ -46,18 +49,19 @@ class AddItemCategoryDropdown extends StatelessWidget {
                   ),
                   isExpanded: true,
                   icon: const Icon(IconsaxPlusLinear.arrow_down_1, size: 18),
-                  items: categories.map((String category) {
-                    return DropdownMenuItem<String>(
-                      value: category,
-                      child: Text(
-                        category,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.blackText,
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                  items:
+                      categories.map((String category) {
+                        return DropdownMenuItem<String>(
+                          value: category,
+                          child: Text(
+                            category,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColors.blackText,
+                            ),
+                          ),
+                        );
+                      }).toList(),
                   onChanged: (String? newValue) {
                     context.read<AddItemProvider>().setCategory(newValue);
                   },
