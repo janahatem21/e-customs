@@ -17,6 +17,16 @@ import 'package:e_customs/features/auth/data/repositories/auth_repository.dart'
     as _i678;
 import 'package:e_customs/features/auth/presentation/providers/auth_provider.dart'
     as _i523;
+import 'package:e_customs/features/customs/data/datasources/items_remote_data_source.dart'
+    as _i112;
+import 'package:e_customs/features/customs/data/repositories/items_repository_impl.dart'
+    as _i341;
+import 'package:e_customs/features/customs/domain/repositories/items_repository.dart'
+    as _i53;
+import 'package:e_customs/features/customs/domain/usecases/add_item_usecase.dart'
+    as _i1062;
+import 'package:e_customs/features/customs/presentation/provider/add_item_provider.dart'
+    as _i977;
 import 'package:e_customs/features/documents/presentation/provider/upload_documents_provider.dart'
     as _i1060;
 import 'package:e_customs/features/home/providers/home_provider.dart' as _i191;
@@ -51,6 +61,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i106.NotificationProvider>(() => _i106.NotificationProvider());
     gh.factory<_i552.FeesProvider>(() => _i552.FeesProvider());
     gh.lazySingleton<_i1000.FirebaseServices>(() => _i1000.FirebaseServices());
+    gh.lazySingleton<_i112.ItemsRemoteDataSource>(
+      () => _i112.ItemsRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
+    );
     gh.lazySingleton<_i508.TrackingRepository>(
       () => _i508.TrackingRepositoryImpl(),
     );
@@ -62,6 +75,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i398.ProfileRemoteDataSource>(
       () => _i398.ProfileRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
+    );
+    gh.factory<_i53.ItemsRepository>(
+      () => _i341.ItemsRepositoryImpl(gh<_i112.ItemsRemoteDataSource>()),
+    );
+    gh.factory<_i1062.AddItemUseCase>(
+      () => _i1062.AddItemUseCase(gh<_i53.ItemsRepository>()),
+    );
+    gh.factory<_i977.AddItemProvider>(
+      () => _i977.AddItemProvider(gh<_i1062.AddItemUseCase>()),
     );
     gh.factory<_i473.TrackingProvider>(
       () => _i473.TrackingProvider(gh<_i508.TrackingRepository>()),

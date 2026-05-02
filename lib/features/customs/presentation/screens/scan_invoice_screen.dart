@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_card.dart';
-import '../../../../core/routes/app_router.dart';
-
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/widgets/app_button.dart';
+import '../../../../../core/widgets/app_card.dart';
+import '../../../../../core/routes/app_router.dart';
 
 enum ScanState { camera, processing, preview }
 

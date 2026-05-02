@@ -1,4 +1,5 @@
 import 'package:e_customs/core/models/user_model.dart';
+import 'package:e_customs/features/customs/presentation/provider/add_item_provider.dart';
 import 'package:e_customs/features/payments/presentation/screens/payment_checkout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,7 @@ import '../../features/auth/presentation/screens/login/screens/forgot_password_s
 import '../../features/auth/presentation/screens/login/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register/screens/register_screen.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
-import '../../features/customs/customs_form_screen.dart';
+import '../../features/customs/presentation/screens/customs_form_screen.dart';
 import '../../features/layout/providers/layout_provider.dart';
 import '../../features/layout/screens/layout_screen.dart';
 import '../../features/notifications/presentation/providers/notification_provider.dart';
@@ -18,10 +19,10 @@ import '../../features/tracking/presentation/screens/detailed_log_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/payments/presentation/provider/fees_provider.dart';
 import '../../features/profile/presentation/provider/profile_provider.dart';
-import '../../features/customs/screens/add_item_screen.dart';
-import '../../features/customs/screens/scan_invoice_screen.dart';
-import '../../features/customs/screens/declaration_screen.dart';
-import '../../features/customs/screens/calculate_customs_screen.dart';
+import '../../features/customs/presentation/screens/add_item_screen.dart';
+import '../../features/customs/presentation/screens/scan_invoice_screen.dart';
+import '../../features/customs/presentation/screens/declaration_screen.dart';
+import '../../features/customs/presentation/screens/calculate_customs_screen.dart';
 import '../../features/payments/presentation/screens/payment_screen.dart';
 import '../../features/payments/presentation/screens/payment_success_screen.dart';
 import '../../features/payments/presentation/screens/qr_code_screen.dart';
@@ -92,7 +93,11 @@ class AppRouter {
           value: getIt<FeesProvider>(),
           child: const PaymentCheckoutScreen(),
         ),
-    addItem: (context) => const AddItemScreen(),
+    addItem:
+        (context) => ChangeNotifierProvider(
+          create: (_) => getIt<AddItemProvider>(),
+          child: const AddItemScreen(),
+        ),
     scanInvoice: (context) => const ScanInvoiceScreen(),
     declaration: (context) => const DeclarationScreen(),
     calculateCustoms: (context) => const CalculateCustomsScreen(),
