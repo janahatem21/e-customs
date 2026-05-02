@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/constants/app_colors.dart';
-
+import '../../../../core/di/service_locator.dart';
+import '../../../../core/services/firebase_services.dart';
+import '../../../../core/routes/app_router.dart';
+import '../../customs/presentation/provider/declaration_provider.dart';
 import '../models/quick_action.dart';
+import 'package:provider/provider.dart';
 
 class QuickActionsSection extends StatelessWidget {
   const QuickActionsSection({super.key});
@@ -32,7 +36,28 @@ class QuickActionsSection extends StatelessWidget {
                 subtitle: action.subtitle,
                 icon: action.icon,
                 color: action.color,
-                onTap: () {
+                onTap: () async {
+                  if (action.route == AppRouter.addItem) {
+                    final userId = getIt<FirebaseServices>().currentUser?.uid;
+                    if (userId != null) {
+                      final declarationProvider = context.read<DeclarationProvider>();
+                      final id = await declarationProvider.ensureActiveDeclaration(userId);
+                      
+                      if (!context.mounted) return;
+                      
+                      if (id != null) {
+                        Navigator.pushNamed(
+                          context, 
+                          AppRouter.addItem, 
+                          arguments: id,
+                        );
+                      } else {
+                        Navigator.pushNamed(context, AppRouter.createDeclaration);
+                      }
+                    }
+                    return;
+                  }
+                  
                   if (action.route != null) {
                     Navigator.pushNamed(context, action.route!);
                   }

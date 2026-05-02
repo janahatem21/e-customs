@@ -12,38 +12,32 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.gradientTop,
       body: SafeArea(
-        child: Column(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 10),
           children: [
             const HomeGreetingSection()
                 .animate()
                 .fadeIn(duration: 400.ms)
                 .slideY(begin: -0.1, end: 0, curve: Curves.easeOutQuad),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                children: [
-                  _buildStatsSection()
-                      .animate()
-                      .fadeIn(delay: 100.ms)
-                      .slideY(begin: 0.1, end: 0, curve: Curves.easeOutQuad),
-                  const SizedBox(height: 32),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      'Quick Services',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.blackText,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const QuickActionsSection(),
-                  const SizedBox(height: 32),
-                ],
+            _buildStatsSection()
+                .animate()
+                .fadeIn(delay: 100.ms)
+                .slideY(begin: 0.1, end: 0, curve: Curves.easeOutQuad),
+            const SizedBox(height: 32),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Quick Services',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.blackText,
+                ),
               ),
             ),
+            const SizedBox(height: 16),
+            const QuickActionsSection(),
+            const SizedBox(height: 32),
           ],
         ),
       ),

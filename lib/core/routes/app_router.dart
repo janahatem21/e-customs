@@ -1,5 +1,7 @@
 import 'package:e_customs/core/models/user_model.dart';
 import 'package:e_customs/features/customs/presentation/provider/add_item_provider.dart';
+import 'package:e_customs/features/customs/presentation/provider/declaration_provider.dart';
+import 'package:e_customs/features/customs/presentation/screens/create_declaration_screen.dart';
 import 'package:e_customs/features/payments/presentation/screens/payment_checkout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +44,7 @@ class AppRouter {
   static const String detailedLog = '/detailed-log';
   static const String checkout = '/checkout';
   static const String addItem = '/add-item';
+  static const String createDeclaration = '/create-declaration';
   static const String scanInvoice = '/scan-invoice';
   static const String declaration = '/declaration';
   static const String calculateCustoms = '/calculate-customs';
@@ -68,8 +71,11 @@ class AppRouter {
           child: const RegisterScreen(),
         ),
     layout:
-        (context) => ChangeNotifierProvider(
-          create: (_) => LayoutProvider(),
+        (context) => MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => LayoutProvider()),
+            ChangeNotifierProvider.value(value: getIt<DeclarationProvider>()),
+          ],
           child: const LayoutScreen(),
         ),
     forgotPassword:
@@ -97,6 +103,11 @@ class AppRouter {
         (context) => ChangeNotifierProvider(
           create: (_) => getIt<AddItemProvider>(),
           child: const AddItemScreen(),
+        ),
+    createDeclaration:
+        (context) => ChangeNotifierProvider.value(
+          value: getIt<DeclarationProvider>(),
+          child: const CreateDeclarationScreen(),
         ),
     scanInvoice: (context) => const ScanInvoiceScreen(),
     declaration: (context) => const DeclarationScreen(),

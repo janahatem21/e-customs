@@ -17,16 +17,28 @@ import 'package:e_customs/features/auth/data/repositories/auth_repository.dart'
     as _i678;
 import 'package:e_customs/features/auth/presentation/providers/auth_provider.dart'
     as _i523;
+import 'package:e_customs/features/customs/data/datasources/declarations_remote_data_source.dart'
+    as _i577;
 import 'package:e_customs/features/customs/data/datasources/items_remote_data_source.dart'
     as _i112;
+import 'package:e_customs/features/customs/data/repositories/declarations_repository_impl.dart'
+    as _i580;
 import 'package:e_customs/features/customs/data/repositories/items_repository_impl.dart'
     as _i341;
+import 'package:e_customs/features/customs/domain/repositories/declarations_repository.dart'
+    as _i872;
 import 'package:e_customs/features/customs/domain/repositories/items_repository.dart'
     as _i53;
 import 'package:e_customs/features/customs/domain/usecases/add_item_usecase.dart'
     as _i1062;
+import 'package:e_customs/features/customs/domain/usecases/create_declaration_usecase.dart'
+    as _i98;
+import 'package:e_customs/features/customs/domain/usecases/get_active_declaration_usecase.dart'
+    as _i590;
 import 'package:e_customs/features/customs/presentation/provider/add_item_provider.dart'
     as _i977;
+import 'package:e_customs/features/customs/presentation/provider/declaration_provider.dart'
+    as _i125;
 import 'package:e_customs/features/documents/presentation/provider/upload_documents_provider.dart'
     as _i1060;
 import 'package:e_customs/features/home/providers/home_provider.dart' as _i191;
@@ -76,8 +88,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i398.ProfileRemoteDataSource>(
       () => _i398.ProfileRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
     );
+    gh.lazySingleton<_i577.DeclarationsRemoteDataSource>(
+      () =>
+          _i577.DeclarationsRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
+    );
     gh.factory<_i53.ItemsRepository>(
       () => _i341.ItemsRepositoryImpl(gh<_i112.ItemsRemoteDataSource>()),
+    );
+    gh.factory<_i872.DeclarationsRepository>(
+      () => _i580.DeclarationsRepositoryImpl(
+        gh<_i577.DeclarationsRemoteDataSource>(),
+      ),
     );
     gh.factory<_i1062.AddItemUseCase>(
       () => _i1062.AddItemUseCase(gh<_i53.ItemsRepository>()),
@@ -94,10 +115,23 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i682.ProfileRepository>(
       () => _i682.ProfileRepositoryImpl(gh<_i398.ProfileRemoteDataSource>()),
     );
+    gh.factory<_i98.CreateDeclarationUseCase>(
+      () => _i98.CreateDeclarationUseCase(gh<_i872.DeclarationsRepository>()),
+    );
+    gh.factory<_i590.GetActiveDeclarationUseCase>(
+      () =>
+          _i590.GetActiveDeclarationUseCase(gh<_i872.DeclarationsRepository>()),
+    );
     gh.factory<_i523.AuthProvider>(
       () => _i523.AuthProvider(
         gh<_i678.AuthRepository>(),
         gh<_i479.UserProvider>(),
+      ),
+    );
+    gh.lazySingleton<_i125.DeclarationProvider>(
+      () => _i125.DeclarationProvider(
+        gh<_i590.GetActiveDeclarationUseCase>(),
+        gh<_i98.CreateDeclarationUseCase>(),
       ),
     );
     gh.factory<_i924.ProfileProvider>(
