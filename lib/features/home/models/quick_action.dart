@@ -33,18 +33,18 @@ class QuickAction {
       route: AppRouter.scanInvoice,
     ),
     const QuickAction(
-      title: 'Declarations',
-      icon: IconsaxPlusBold.document_text_1,
-      color: Color(0xFFF59E0B),
-      subtitle: 'History & status',
-      route: AppRouter.declaration,
-    ),
-    const QuickAction(
       title: 'Calculator',
       icon: IconsaxPlusBold.calculator,
       color: Color(0xFFEC4899),
       subtitle: 'Duty estimate',
       route: AppRouter.calculateCustoms,
+    ),
+    const QuickAction(
+      title: 'Declarations',
+      icon: IconsaxPlusBold.document_text_1,
+      color: Color(0xFFF59E0B),
+      subtitle: 'History & status',
+      route: AppRouter.declaration,
     ),
   ];
 }

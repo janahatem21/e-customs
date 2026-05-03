@@ -10,4 +10,9 @@ class AppConstants {
   ];
 
   static const List<String> currencies = ['USD', 'EUR', 'EGP'];
+
+  // Declaration Statuses
+  static const String statusDraft = 'draft';
+  static const String statusCalculated = 'calculated';
+  static const String statusPaid = 'paid';
 }

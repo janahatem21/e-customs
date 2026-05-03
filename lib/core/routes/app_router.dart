@@ -1,5 +1,6 @@
 import 'package:e_customs/core/models/user_model.dart';
 import 'package:e_customs/features/customs/presentation/provider/add_item_provider.dart';
+import 'package:e_customs/features/customs/presentation/provider/calculate_provider.dart';
 import 'package:e_customs/features/customs/presentation/provider/declaration_provider.dart';
 import 'package:e_customs/features/customs/presentation/provider/scan_invoice_provider.dart';
 import 'package:e_customs/features/customs/presentation/screens/create_declaration_screen.dart';
@@ -76,6 +77,7 @@ class AppRouter {
           providers: [
             ChangeNotifierProvider(create: (_) => LayoutProvider()),
             ChangeNotifierProvider.value(value: getIt<DeclarationProvider>()),
+            ChangeNotifierProvider(create: (_) => getIt<CalculateProvider>()),
           ],
           child: const LayoutScreen(),
         ),
@@ -119,7 +121,14 @@ class AppRouter {
           child: const ScanInvoiceScreen(),
         ),
     declaration: (context) => const DeclarationScreen(),
-    calculateCustoms: (context) => const CalculateCustomsScreen(),
+    calculateCustoms:
+        (context) => MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => getIt<CalculateProvider>()),
+            ChangeNotifierProvider.value(value: getIt<DeclarationProvider>()),
+          ],
+          child: const CalculateCustomsScreen(),
+        ),
     payment: (context) => const PaymentScreen(),
     paymentSuccess: (context) => const PaymentSuccessScreen(),
     qrCode: (context) => const QRCodeScreen(),

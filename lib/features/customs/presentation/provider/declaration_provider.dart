@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import '../../data/models/declaration_model.dart';
 import '../../domain/usecases/get_active_declaration_usecase.dart';
 import '../../domain/usecases/create_declaration_usecase.dart';
 
@@ -14,6 +15,9 @@ class DeclarationProvider extends ChangeNotifier {
     this._getActiveDeclarationUseCase,
     this._createDeclarationUseCase,
   );
+
+  DeclarationModel? _currentDeclaration;
+  DeclarationModel? get currentDeclaration => _currentDeclaration;
 
   DeclarationState _state = DeclarationState.idle;
   DeclarationState get state => _state;
@@ -35,6 +39,7 @@ class DeclarationProvider extends ChangeNotifier {
       final active = await _getActiveDeclarationUseCase(userId);
       
       if (active != null) {
+        _currentDeclaration = active as DeclarationModel;
         _currentDeclarationId = active.id;
         _state = DeclarationState.success;
         notifyListeners();

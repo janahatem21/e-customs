@@ -1,10 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/services/firebase_services.dart';
 import '../models/declaration_model.dart';
 
 abstract interface class DeclarationsRemoteDataSource {
   Future<DeclarationModel?> getActiveDeclaration(String userId);
+  Future<DeclarationModel?> getDeclarationById(
+    String userId,
+    String declarationId,
+  );
+  Future<void> updateDeclarationStatus(
+    String userId,
+    String declarationId,
+    String status,
+  );
   Future<String> createDeclaration(String userId);
 }
 
@@ -24,7 +34,7 @@ class DeclarationsRemoteDataSourceImpl implements DeclarationsRemoteDataSource {
     final snapshot =
         await _declarationsRef(
           userId,
-        ).where('status', isEqualTo: 'draft').limit(1).get();
+        ).where('status', isEqualTo: AppConstants.statusDraft).limit(1).get();
 
     if (snapshot.docs.isNotEmpty) {
       return DeclarationModel.fromJson(
@@ -33,6 +43,30 @@ class DeclarationsRemoteDataSourceImpl implements DeclarationsRemoteDataSource {
       );
     }
     return null;
+  }
+
+  @override
+  Future<DeclarationModel?> getDeclarationById(
+    String userId,
+    String declarationId,
+  ) async {
+    final doc = await _declarationsRef(userId).doc(declarationId).get();
+
+    if (doc.exists && doc.data() != null) {
+      return DeclarationModel.fromJson(doc.data()!, doc.id);
+    }
+    return null;
+  }
+
+  @override
+  Future<void> updateDeclarationStatus(
+    String userId,
+    String declarationId,
+    String status,
+  ) async {
+    await _declarationsRef(
+      userId,
+    ).doc(declarationId).update({'status': status});
   }
 
   @override
@@ -45,7 +79,7 @@ class DeclarationsRemoteDataSourceImpl implements DeclarationsRemoteDataSource {
 
     // 2. If not, create a new one
     const model = DeclarationModel(
-      status: 'draft',
+      status: AppConstants.statusDraft,
       totalCustoms: 0.0,
       totalVAT: 0.0,
       totalAmount: 0.0,

@@ -18,18 +18,24 @@ import 'package:e_customs/features/auth/data/repositories/auth_repository.dart'
     as _i678;
 import 'package:e_customs/features/auth/presentation/providers/auth_provider.dart'
     as _i523;
+import 'package:e_customs/features/customs/data/datasources/customs_remote_data_source.dart'
+    as _i223;
 import 'package:e_customs/features/customs/data/datasources/declarations_remote_data_source.dart'
     as _i577;
 import 'package:e_customs/features/customs/data/datasources/items_remote_data_source.dart'
     as _i112;
 import 'package:e_customs/features/customs/data/datasources/ocr_remote_data_source.dart'
     as _i80;
+import 'package:e_customs/features/customs/data/repositories/customs_repository_impl.dart'
+    as _i15;
 import 'package:e_customs/features/customs/data/repositories/declarations_repository_impl.dart'
     as _i580;
 import 'package:e_customs/features/customs/data/repositories/items_repository_impl.dart'
     as _i341;
 import 'package:e_customs/features/customs/data/repositories/ocr_repository_impl.dart'
     as _i961;
+import 'package:e_customs/features/customs/domain/repositories/customs_repository.dart'
+    as _i568;
 import 'package:e_customs/features/customs/domain/repositories/declarations_repository.dart'
     as _i872;
 import 'package:e_customs/features/customs/domain/repositories/items_repository.dart'
@@ -38,14 +44,24 @@ import 'package:e_customs/features/customs/domain/repositories/ocr_repository.da
     as _i511;
 import 'package:e_customs/features/customs/domain/usecases/add_item_usecase.dart'
     as _i1062;
+import 'package:e_customs/features/customs/domain/usecases/calculate_customs_usecase.dart'
+    as _i480;
+import 'package:e_customs/features/customs/domain/usecases/confirm_calculation_usecase.dart'
+    as _i203;
 import 'package:e_customs/features/customs/domain/usecases/create_declaration_usecase.dart'
     as _i98;
 import 'package:e_customs/features/customs/domain/usecases/get_active_declaration_usecase.dart'
     as _i590;
+import 'package:e_customs/features/customs/domain/usecases/get_declaration_by_id_usecase.dart'
+    as _i563;
+import 'package:e_customs/features/customs/domain/usecases/get_items_usecase.dart'
+    as _i945;
 import 'package:e_customs/features/customs/domain/usecases/scan_invoice_usecase.dart'
     as _i523;
 import 'package:e_customs/features/customs/presentation/provider/add_item_provider.dart'
     as _i977;
+import 'package:e_customs/features/customs/presentation/provider/calculate_provider.dart'
+    as _i231;
 import 'package:e_customs/features/customs/presentation/provider/declaration_provider.dart'
     as _i125;
 import 'package:e_customs/features/customs/presentation/provider/scan_invoice_provider.dart'
@@ -88,6 +104,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i112.ItemsRemoteDataSource>(
       () => _i112.ItemsRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
     );
+    gh.factory<_i223.CustomsRemoteDataSource>(
+      () => _i223.CustomsRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
+    );
     gh.lazySingleton<_i508.TrackingRepository>(
       () => _i508.TrackingRepositoryImpl(),
     );
@@ -107,6 +126,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i80.OcrRemoteDataSource>(
       () => _i80.OcrRemoteDataSourceImpl(gh<_i693.OcrService>()),
     );
+    gh.factory<_i568.CustomsRepository>(
+      () => _i15.CustomsRepositoryImpl(gh<_i223.CustomsRemoteDataSource>()),
+    );
     gh.factory<_i53.ItemsRepository>(
       () => _i341.ItemsRepositoryImpl(gh<_i112.ItemsRemoteDataSource>()),
     );
@@ -121,6 +143,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i977.AddItemProvider>(
       () => _i977.AddItemProvider(gh<_i1062.AddItemUseCase>()),
     );
+    gh.factory<_i480.CalculateCustomsUseCase>(
+      () => _i480.CalculateCustomsUseCase(gh<_i568.CustomsRepository>()),
+    );
     gh.factory<_i473.TrackingProvider>(
       () => _i473.TrackingProvider(gh<_i508.TrackingRepository>()),
     );
@@ -133,12 +158,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i682.ProfileRepository>(
       () => _i682.ProfileRepositoryImpl(gh<_i398.ProfileRemoteDataSource>()),
     );
+    gh.factory<_i945.GetItemsUseCase>(
+      () => _i945.GetItemsUseCase(gh<_i568.CustomsRepository>()),
+    );
+    gh.factory<_i203.ConfirmCalculationUseCase>(
+      () => _i203.ConfirmCalculationUseCase(gh<_i872.DeclarationsRepository>()),
+    );
     gh.factory<_i98.CreateDeclarationUseCase>(
       () => _i98.CreateDeclarationUseCase(gh<_i872.DeclarationsRepository>()),
     );
     gh.factory<_i590.GetActiveDeclarationUseCase>(
       () =>
           _i590.GetActiveDeclarationUseCase(gh<_i872.DeclarationsRepository>()),
+    );
+    gh.factory<_i563.GetDeclarationByIdUseCase>(
+      () => _i563.GetDeclarationByIdUseCase(gh<_i872.DeclarationsRepository>()),
     );
     gh.factory<_i523.AuthProvider>(
       () => _i523.AuthProvider(
@@ -150,6 +184,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i125.DeclarationProvider(
         gh<_i590.GetActiveDeclarationUseCase>(),
         gh<_i98.CreateDeclarationUseCase>(),
+      ),
+    );
+    gh.factory<_i231.CalculateProvider>(
+      () => _i231.CalculateProvider(
+        gh<_i480.CalculateCustomsUseCase>(),
+        gh<_i945.GetItemsUseCase>(),
+        gh<_i563.GetDeclarationByIdUseCase>(),
+        gh<_i203.ConfirmCalculationUseCase>(),
       ),
     );
     gh.factory<_i523.ScanInvoiceUseCase>(

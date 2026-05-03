@@ -15,6 +15,27 @@ class DeclarationsRepositoryImpl implements DeclarationsRepository {
   }
 
   @override
+  Future<DeclarationEntity?> getDeclarationById(
+    String userId,
+    String declarationId,
+  ) async {
+    return await _remoteDataSource.getDeclarationById(userId, declarationId);
+  }
+
+  @override
+  Future<void> updateDeclarationStatus(
+    String userId,
+    String declarationId,
+    String status,
+  ) async {
+    await _remoteDataSource.updateDeclarationStatus(
+      userId,
+      declarationId,
+      status,
+    );
+  }
+
+  @override
   Future<String> createDeclaration(String userId) async {
     return await _remoteDataSource.createDeclaration(userId);
   }
