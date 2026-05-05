@@ -71,8 +71,16 @@ import 'package:e_customs/features/documents/presentation/provider/upload_docume
 import 'package:e_customs/features/home/providers/home_provider.dart' as _i191;
 import 'package:e_customs/features/notifications/presentation/providers/notification_provider.dart'
     as _i106;
-import 'package:e_customs/features/payments/presentation/provider/fees_provider.dart'
-    as _i552;
+import 'package:e_customs/features/payments/data/datasources/payment_remote_data_source.dart'
+    as _i321;
+import 'package:e_customs/features/payments/data/repositories/payment_repository_impl.dart'
+    as _i235;
+import 'package:e_customs/features/payments/domain/repositories/payment_repository.dart'
+    as _i1069;
+import 'package:e_customs/features/payments/domain/usecases/complete_payment_usecase.dart'
+    as _i1049;
+import 'package:e_customs/features/payments/presentation/provider/payment_provider.dart'
+    as _i773;
 import 'package:e_customs/features/profile/data/datasources/profile_remote_datasource.dart'
     as _i398;
 import 'package:e_customs/features/profile/data/repositories/profile_repository.dart'
@@ -98,7 +106,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i191.HomeProvider>(() => _i191.HomeProvider());
     gh.factory<_i106.NotificationProvider>(() => _i106.NotificationProvider());
-    gh.factory<_i552.FeesProvider>(() => _i552.FeesProvider());
     gh.lazySingleton<_i1000.FirebaseServices>(() => _i1000.FirebaseServices());
     gh.lazySingleton<_i693.OcrService>(() => _i693.OcrService());
     gh.lazySingleton<_i112.ItemsRemoteDataSource>(
@@ -131,6 +138,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i53.ItemsRepository>(
       () => _i341.ItemsRepositoryImpl(gh<_i112.ItemsRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i321.PaymentRemoteDataSource>(
+      () => _i321.PaymentRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
     );
     gh.factory<_i872.DeclarationsRepository>(
       () => _i580.DeclarationsRepositoryImpl(
@@ -180,7 +190,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i479.UserProvider>(),
       ),
     );
-    gh.lazySingleton<_i125.DeclarationProvider>(
+    gh.factory<_i1069.PaymentRepository>(
+      () => _i235.PaymentRepositoryImpl(gh<_i321.PaymentRemoteDataSource>()),
+    );
+    gh.factory<_i125.DeclarationProvider>(
       () => _i125.DeclarationProvider(
         gh<_i590.GetActiveDeclarationUseCase>(),
         gh<_i98.CreateDeclarationUseCase>(),
@@ -207,6 +220,15 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i924.ProfileProvider(
         gh<_i682.ProfileRepository>(),
         gh<_i678.AuthRepository>(),
+      ),
+    );
+    gh.factory<_i1049.CompletePaymentUseCase>(
+      () => _i1049.CompletePaymentUseCase(gh<_i1069.PaymentRepository>()),
+    );
+    gh.factory<_i773.PaymentProvider>(
+      () => _i773.PaymentProvider(
+        gh<_i1049.CompletePaymentUseCase>(),
+        gh<_i872.DeclarationsRepository>(),
       ),
     );
     return this;

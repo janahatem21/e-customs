@@ -32,8 +32,9 @@ class CalculateActions extends StatelessWidget {
         userId: userId,
         declarationId: declarationId,
       );
+
       if (context.mounted) {
-        Navigator.pushNamed(context, AppRouter.payment);
+        Navigator.pushNamed(context, AppRouter.payment, arguments: declarationId);
       }
     } catch (e) {
       if (context.mounted) {
@@ -65,20 +66,23 @@ class CalculateActions extends StatelessWidget {
                 text: 'Confirm & Proceed',
                 isLoading: provider.isConfirming,
                 onPressed: () => _onConfirm(context),
-                trailingIcon:
-                    const Icon(IconsaxPlusLinear.tick_circle, size: 20),
+                trailingIcon: const Icon(
+                  IconsaxPlusLinear.tick_circle,
+                  size: 20,
+                ),
               ).animate().slideY(begin: 0.2, end: 0, duration: 400.ms),
               const SizedBox(height: 12),
               AppButton(
                 text: 'Back to Edit Items',
                 variant: AppButtonVariant.outline,
-                onPressed: provider.isConfirming ? null : () => Navigator.pop(context),
+                onPressed:
+                    provider.isConfirming ? null : () => Navigator.pop(context),
               ).animate().slideY(
-                    begin: 0.2,
-                    end: 0,
-                    delay: 100.ms,
-                    duration: 400.ms,
-                  ),
+                begin: 0.2,
+                end: 0,
+                delay: 100.ms,
+                duration: 400.ms,
+              ),
             ],
           );
         },

@@ -1,112 +1,113 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/app_card.dart';
+import '../provider/payment_provider.dart';
 
 class PaymentMethodSelector extends StatelessWidget {
-  final int selectedIndex;
-  final Function(int) onSelected;
+  const PaymentMethodSelector({super.key});
 
-  const PaymentMethodSelector({
-    super.key,
-    required this.selectedIndex,
-    required this.onSelected,
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [
+        _MethodItem(
+          method: AppPaymentMethod.card,
+          icon: IconsaxPlusLinear.card,
+          title: 'Credit / Debit Card',
+          subtitle: 'Visa, Mastercard, Amex',
+        ),
+        SizedBox(height: 12),
+        _MethodItem(
+          method: AppPaymentMethod.wallet,
+          icon: IconsaxPlusLinear.mobile,
+          title: 'Mobile Wallet',
+          subtitle: 'Apple Pay, Google Pay',
+        ),
+      ],
+    );
+  }
+}
+
+class _MethodItem extends StatelessWidget {
+  final AppPaymentMethod method;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _MethodItem({
+    required this.method,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 60,
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
-      ),
-      child: Stack(
-        children: [
-          // Sliding Indicator
-          AnimatedAlign(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOutCubic,
-            alignment:
-                selectedIndex == 0
-                    ? Alignment.centerLeft
-                    : Alignment.centerRight,
-            child: FractionallySizedBox(
-              widthFactor: 0.5,
-              child: Container(
+    return Consumer<PaymentProvider>(
+      builder: (context, provider, child) {
+        final isSelected = provider.selectedMethod == method;
+
+        return AppCard(
+          onTap: () => provider.setPaymentMethod(method),
+          padding: const EdgeInsets.all(16),
+          color: isSelected ? AppColors.primary.withValues(alpha: 0.02) : AppColors.white,
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+                  color: isSelected
+                      ? AppColors.primary
+                      : AppColors.primary.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  size: 20,
+                  color: isSelected ? AppColors.white : AppColors.primary,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                        color: AppColors.blackText,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.greyText,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: _buildItem(
-                  context,
-                  index: 0,
-                  icon: Icons.credit_card_rounded,
-                  label: "Credit Card",
-                  isSelected: selectedIndex == 0,
-                ),
-              ),
-              Expanded(
-                child: _buildItem(
-                  context,
-                  index: 1,
-                  icon: Icons.account_balance_wallet_rounded,
-                  label: "Digital Wallet",
-                  isSelected: selectedIndex == 1,
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isSelected ? AppColors.primary : AppColors.lightGrey,
+                    width: isSelected ? 6 : 2,
+                  ),
                 ),
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildItem(
-    BuildContext context, {
-    required int index,
-    required IconData icon,
-    required String label,
-    required bool isSelected,
-  }) {
-    return GestureDetector(
-      onTap: () => onSelected(index),
-      behavior: HitTestBehavior.opaque,
-      child: Center(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 20,
-              color: isSelected ? AppColors.primary : AppColors.subtitleColor,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              label,
-              style: TextStyle(
-                color:
-                    isSelected ? AppColors.blackText : AppColors.subtitleColor,
-                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

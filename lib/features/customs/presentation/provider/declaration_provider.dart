@@ -6,7 +6,7 @@ import '../../domain/usecases/create_declaration_usecase.dart';
 
 enum DeclarationState { idle, loading, success, error }
 
-@lazySingleton
+@injectable
 class DeclarationProvider extends ChangeNotifier {
   final GetActiveDeclarationUseCase _getActiveDeclarationUseCase;
   final CreateDeclarationUseCase _createDeclarationUseCase;

@@ -2,7 +2,7 @@ import 'package:e_customs/core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../provider/fees_provider.dart';
+import '../provider/payment_provider.dart';
 import '../../domain/entities/fee_entity.dart';
 import '../widgets/fees_header_card.dart';
 import '../widgets/fee_breakdown_item.dart';
@@ -24,7 +24,7 @@ class FeesScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 24),
             // Header Card with basic info
-            Selector<FeesProvider, (String, double, String)>(
+            Selector<PaymentProvider, (String, double, String)>(
               selector: (_, p) => (p.shipmentId, p.totalAmount, p.currency),
               builder: (context, data, _) {
                 return FeesHeaderCard(
@@ -47,35 +47,33 @@ class FeesScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 15,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
                   ),
-                  child: Selector<FeesProvider, List<FeeEntity>>(
-                    selector: (_, p) => p.breakdown,
-                    builder: (context, breakdown, _) {
-                      return Column(
-                        children:
-                            breakdown.map((item) {
-                              return FeeBreakdownItem(
-                                title: item.title,
-                                description: item.description,
-                                amount: item.amount,
-                                icon: item.icon,
-                              );
-                            }).toList(),
+                ],
+              ),
+              child: Consumer<PaymentProvider>(
+                builder: (context, provider, child) {
+                  return Column(
+                    children: provider.breakdown.map((item) {
+                      return FeeBreakdownItem(
+                        title: item.title,
+                        description: item.description,
+                        amount: item.amount,
+                        icon: item.icon,
                       );
-                    },
-                  ),
-                )
+                    }).toList(),
+                  );
+                },
+              ),
+            )
                 .animate()
                 .fadeIn(duration: 500.ms, delay: 200.ms)
                 .slideY(begin: 0.05, end: 0),
@@ -83,12 +81,11 @@ class FeesScreen extends StatelessWidget {
             const SizedBox(height: 32),
 
             // Information Note
-            Selector<FeesProvider, (String, double)>(
-              selector: (_, p) => (p.invoiceNumber, p.declaredValue),
-              builder: (context, data, _) {
-                return PaymentInfoNote(
-                  invoiceNumber: data.$1,
-                  declaredValue: data.$2,
+            Consumer<PaymentProvider>(
+              builder: (context, provider, _) {
+                return const PaymentInfoNote(
+                  invoiceNumber: "INV-2024-001", // Default for now
+                  declaredValue: 0.0,
                 );
               },
             ).animate().fadeIn(duration: 400.ms, delay: 350.ms),
@@ -96,18 +93,18 @@ class FeesScreen extends StatelessWidget {
             const SizedBox(height: 40),
 
             // Action Button
-            Selector<FeesProvider, double>(
-                  selector: (_, p) => p.totalAmount,
-                  builder: (context, total, _) {
-                    return AppButton(
-                      text: "Pay Now (€${total.toStringAsFixed(2)})",
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRouter.checkout);
-                      },
-                      shimmer: true,
-                    );
+            Selector<PaymentProvider, double>(
+              selector: (_, p) => p.totalAmount,
+              builder: (context, total, _) {
+                return AppButton(
+                  text: "Pay Now (\$${total.toStringAsFixed(2)})",
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRouter.checkout);
                   },
-                )
+                  shimmer: true,
+                );
+              },
+            )
                 .animate()
                 .fadeIn(duration: 400.ms, delay: 500.ms)
                 .scale(begin: const Offset(0.9, 0.9), end: const Offset(1, 1)),

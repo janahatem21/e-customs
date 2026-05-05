@@ -21,7 +21,7 @@ import '../../features/onboarding/screens/onboarding_screen.dart';
 import '../../features/tracking/presentation/providers/tracking_provider.dart';
 import '../../features/tracking/presentation/screens/detailed_log_screen.dart';
 import '../../features/splash/splash_screen.dart';
-import '../../features/payments/presentation/provider/fees_provider.dart';
+import '../../features/payments/presentation/provider/payment_provider.dart';
 import '../../features/profile/presentation/provider/profile_provider.dart';
 import '../../features/customs/presentation/screens/add_item_screen.dart';
 import '../../features/customs/presentation/screens/scan_invoice_screen.dart';
@@ -77,7 +77,6 @@ class AppRouter {
           providers: [
             ChangeNotifierProvider(create: (_) => LayoutProvider()),
             ChangeNotifierProvider.value(value: getIt<DeclarationProvider>()),
-            ChangeNotifierProvider(create: (_) => getIt<CalculateProvider>()),
           ],
           child: const LayoutScreen(),
         ),
@@ -98,13 +97,19 @@ class AppRouter {
           child: const DetailedLogScreen(),
         ),
     checkout:
-        (context) => ChangeNotifierProvider.value(
-          value: getIt<FeesProvider>(),
+        (context) => MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(value: getIt<PaymentProvider>()),
+            ChangeNotifierProvider.value(value: getIt<DeclarationProvider>()),
+          ],
           child: const PaymentCheckoutScreen(),
         ),
     addItem:
-        (context) => ChangeNotifierProvider(
-          create: (_) => getIt<AddItemProvider>(),
+        (context) => MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => getIt<AddItemProvider>()),
+            ChangeNotifierProvider.value(value: getIt<DeclarationProvider>()),
+          ],
           child: const AddItemScreen(),
         ),
     createDeclaration:
@@ -129,9 +134,32 @@ class AppRouter {
           ],
           child: const CalculateCustomsScreen(),
         ),
-    payment: (context) => const PaymentScreen(),
+    payment: (context) {
+      final declarationId =
+          ModalRoute.of(context)?.settings.arguments as String?;
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => getIt<PaymentProvider>()),
+          ChangeNotifierProvider.value(value: getIt<DeclarationProvider>()),
+        ],
+        child: PaymentScreen(declarationId: declarationId),
+      );
+    },
     paymentSuccess: (context) => const PaymentSuccessScreen(),
-    qrCode: (context) => const QRCodeScreen(),
+    qrCode: (context) {
+      final paymentProvider =
+          ModalRoute.of(context)?.settings.arguments as PaymentProvider?;
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: getIt<DeclarationProvider>()),
+          if (paymentProvider != null)
+            ChangeNotifierProvider.value(value: paymentProvider)
+          else
+            ChangeNotifierProvider.value(value: getIt<PaymentProvider>()),
+        ],
+        child: const QRCodeScreen(),
+      );
+    },
     editProfile: (context) {
       final user = ModalRoute.of(context)?.settings.arguments as UserModel?;
       return ChangeNotifierProvider.value(
