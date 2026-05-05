@@ -20,6 +20,12 @@ class PaymentCardForm extends StatelessWidget {
               label: 'Card Holder Name',
               hintText: 'e.g. Ahmed Mohamed',
               onChanged: provider.updateCardHolderName,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter holder name';
+                }
+                return null;
+              },
               prefixIcon: const Icon(
                 IconsaxPlusLinear.user,
                 size: 20,
@@ -32,6 +38,11 @@ class PaymentCardForm extends StatelessWidget {
               hintText: '0000 0000 0000 0000',
               keyboardType: TextInputType.number,
               onChanged: provider.updateCardNumber,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'Required';
+                if (value.length < 16) return 'Invalid card number';
+                return null;
+              },
               prefixIcon: const Icon(
                 IconsaxPlusLinear.card,
                 size: 20,
@@ -47,6 +58,13 @@ class PaymentCardForm extends StatelessWidget {
                     hintText: 'MM/YY',
                     keyboardType: TextInputType.number,
                     onChanged: provider.updateExpiryDate,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return 'Required';
+                      if (!RegExp(r'^\d{2}/\d{2}$').hasMatch(value)) {
+                        return 'Invalid (MM/YY)';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -57,6 +75,11 @@ class PaymentCardForm extends StatelessWidget {
                     obscureText: true,
                     keyboardType: TextInputType.number,
                     onChanged: provider.updateCvv,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return 'Required';
+                      if (value.length < 3) return 'Invalid';
+                      return null;
+                    },
                   ),
                 ),
               ],

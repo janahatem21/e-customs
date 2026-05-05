@@ -92,17 +92,20 @@ class _DynamicDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<PaymentProvider, AppPaymentMethod>(
-      selector: (_, provider) => provider.selectedMethod,
-      builder: (context, method, child) {
-        return AnimatedSwitcher(
-          duration: 300.ms,
-          child:
-              method == AppPaymentMethod.card
-                  ? const PaymentCardForm()
-                  : const PaymentWalletForm(),
-        );
-      },
+    return Form(
+      key: context.read<PaymentProvider>().formKey,
+      child: Selector<PaymentProvider, AppPaymentMethod>(
+        selector: (_, provider) => provider.selectedMethod,
+        builder: (context, method, child) {
+          return AnimatedSwitcher(
+            duration: 300.ms,
+            child:
+                method == AppPaymentMethod.card
+                    ? const PaymentCardForm()
+                    : const PaymentWalletForm(),
+          );
+        },
+      ),
     );
   }
 }

@@ -21,6 +21,11 @@ class PaymentWalletForm extends StatelessWidget {
               hintText: '+971 50 123 4567',
               keyboardType: TextInputType.phone,
               onChanged: provider.updatePhoneNumber,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'Required';
+                if (value.length < 9) return 'Invalid phone number';
+                return null;
+              },
               prefixIcon: const Icon(
                 IconsaxPlusLinear.mobile,
                 size: 20,

@@ -18,7 +18,10 @@ class PaymentProvider extends ChangeNotifier {
     this._declarationsRepository,
   );
 
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   // Fees / Summary Information
+  String? _declarationId;
   String _shipmentId = "EC-CUSTOMS";
   double _totalAmount = 0.0;
   String _currency = "USD";
@@ -47,6 +50,7 @@ class PaymentProvider extends ChangeNotifier {
   PaymentResultEntity? get paymentResult => _paymentResult;
   AppPaymentMethod get selectedMethod => _selectedMethod;
   
+  String? get declarationId => _declarationId;
   String get shipmentId => _shipmentId;
   double get totalAmount => _totalAmount;
   String get currency => _currency;
@@ -131,6 +135,7 @@ class PaymentProvider extends ChangeNotifier {
         declarationId,
       );
       if (declaration != null) {
+        _declarationId = declarationId;
         initFromDeclaration(declaration);
       } else {
         _errorMessage = "Declaration not found";
