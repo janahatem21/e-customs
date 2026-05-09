@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../data/models/declaration_model.dart';
 import '../../domain/usecases/get_active_declaration_usecase.dart';
 import '../../domain/usecases/create_declaration_usecase.dart';
+import '../../domain/usecases/get_latest_calculated_declaration_usecase.dart';
 
 enum DeclarationState { idle, loading, success, error }
 
@@ -10,10 +11,13 @@ enum DeclarationState { idle, loading, success, error }
 class DeclarationProvider extends ChangeNotifier {
   final GetActiveDeclarationUseCase _getActiveDeclarationUseCase;
   final CreateDeclarationUseCase _createDeclarationUseCase;
+  final GetLatestCalculatedDeclarationUseCase
+  _getLatestCalculatedDeclarationUseCase;
 
   DeclarationProvider(
     this._getActiveDeclarationUseCase,
     this._createDeclarationUseCase,
+    this._getLatestCalculatedDeclarationUseCase,
   );
 
   DeclarationModel? _currentDeclaration;
@@ -37,7 +41,7 @@ class DeclarationProvider extends ChangeNotifier {
 
     try {
       final active = await _getActiveDeclarationUseCase(userId);
-      
+
       if (active != null) {
         _currentDeclaration = active as DeclarationModel;
         _currentDeclarationId = active.id;
@@ -45,7 +49,7 @@ class DeclarationProvider extends ChangeNotifier {
         notifyListeners();
         return active.id;
       }
-      
+
       // If no active declaration, we return null so the UI can decide to navigate to CreateDeclarationScreen
       _state = DeclarationState.idle;
       notifyListeners();
@@ -69,6 +73,33 @@ class DeclarationProvider extends ChangeNotifier {
       _state = DeclarationState.success;
       notifyListeners();
       return id;
+    } catch (e) {
+      _state = DeclarationState.error;
+      _errorMessage = e.toString();
+      notifyListeners();
+      return null;
+    }
+  }
+
+  Future<String?> getLatestCalculatedDeclaration(String userId) async {
+    _state = DeclarationState.loading;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final latest = await _getLatestCalculatedDeclarationUseCase(userId);
+
+      if (latest != null) {
+        _currentDeclaration = latest as DeclarationModel;
+        _currentDeclarationId = latest.id;
+        _state = DeclarationState.success;
+        notifyListeners();
+        return latest.id;
+      }
+
+      _state = DeclarationState.idle;
+      notifyListeners();
+      return null;
     } catch (e) {
       _state = DeclarationState.error;
       _errorMessage = e.toString();

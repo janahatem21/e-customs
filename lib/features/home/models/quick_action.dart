@@ -40,11 +40,11 @@ class QuickAction {
       route: AppRouter.calculateCustoms,
     ),
     const QuickAction(
-      title: 'Declarations',
-      icon: IconsaxPlusBold.document_text_1,
+      title: 'Pay Duties',
+      icon: IconsaxPlusBold.wallet_1,
       color: Color(0xFFF59E0B),
-      subtitle: 'History & status',
-      route: AppRouter.declaration,
+      subtitle: 'Latest calculated',
+      route: AppRouter.payment,
     ),
   ];
 }

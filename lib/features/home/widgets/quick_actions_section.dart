@@ -40,24 +40,56 @@ class QuickActionsSection extends StatelessWidget {
                   if (action.route == AppRouter.addItem) {
                     final userId = getIt<FirebaseServices>().currentUser?.uid;
                     if (userId != null) {
-                      final declarationProvider = context.read<DeclarationProvider>();
-                      final id = await declarationProvider.ensureActiveDeclaration(userId);
-                      
+                      final declarationProvider =
+                          context.read<DeclarationProvider>();
+                      final id = await declarationProvider
+                          .ensureActiveDeclaration(userId);
+
                       if (!context.mounted) return;
-                      
+
                       if (id != null) {
                         Navigator.pushNamed(
-                          context, 
-                          AppRouter.addItem, 
+                          context,
+                          AppRouter.addItem,
                           arguments: id,
                         );
                       } else {
-                        Navigator.pushNamed(context, AppRouter.createDeclaration);
+                        Navigator.pushNamed(
+                          context,
+                          AppRouter.createDeclaration,
+                        );
                       }
                     }
                     return;
                   }
-                  
+
+                  if (action.route == AppRouter.payment) {
+                    final userId = getIt<FirebaseServices>().currentUser?.uid;
+                    if (userId != null) {
+                      final declarationProvider =
+                          context.read<DeclarationProvider>();
+                      final id = await declarationProvider
+                          .getLatestCalculatedDeclaration(userId);
+
+                      if (!context.mounted) return;
+
+                      if (id != null) {
+                        Navigator.pushNamed(
+                          context,
+                          AppRouter.payment,
+                          arguments: id,
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('No calculated declarations found'),
+                          ),
+                        );
+                      }
+                    }
+                    return;
+                  }
+
                   if (action.route != null) {
                     Navigator.pushNamed(context, action.route!);
                   }

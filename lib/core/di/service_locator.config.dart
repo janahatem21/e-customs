@@ -56,6 +56,8 @@ import 'package:e_customs/features/customs/domain/usecases/get_declaration_by_id
     as _i563;
 import 'package:e_customs/features/customs/domain/usecases/get_items_usecase.dart'
     as _i945;
+import 'package:e_customs/features/customs/domain/usecases/get_latest_calculated_declaration_usecase.dart'
+    as _i347;
 import 'package:e_customs/features/customs/domain/usecases/scan_invoice_usecase.dart'
     as _i523;
 import 'package:e_customs/features/customs/presentation/provider/add_item_provider.dart'
@@ -184,6 +186,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i563.GetDeclarationByIdUseCase>(
       () => _i563.GetDeclarationByIdUseCase(gh<_i872.DeclarationsRepository>()),
     );
+    gh.factory<_i347.GetLatestCalculatedDeclarationUseCase>(
+      () => _i347.GetLatestCalculatedDeclarationUseCase(
+        gh<_i872.DeclarationsRepository>(),
+      ),
+    );
     gh.factory<_i523.AuthProvider>(
       () => _i523.AuthProvider(
         gh<_i678.AuthRepository>(),
@@ -192,12 +199,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1069.PaymentRepository>(
       () => _i235.PaymentRepositoryImpl(gh<_i321.PaymentRemoteDataSource>()),
-    );
-    gh.factory<_i125.DeclarationProvider>(
-      () => _i125.DeclarationProvider(
-        gh<_i590.GetActiveDeclarationUseCase>(),
-        gh<_i98.CreateDeclarationUseCase>(),
-      ),
     );
     gh.factory<_i231.CalculateProvider>(
       () => _i231.CalculateProvider(
@@ -209,6 +210,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i523.ScanInvoiceUseCase>(
       () => _i523.ScanInvoiceUseCase(gh<_i511.OcrRepository>()),
+    );
+    gh.factory<_i125.DeclarationProvider>(
+      () => _i125.DeclarationProvider(
+        gh<_i590.GetActiveDeclarationUseCase>(),
+        gh<_i98.CreateDeclarationUseCase>(),
+        gh<_i347.GetLatestCalculatedDeclarationUseCase>(),
+      ),
     );
     gh.factory<_i777.ScanInvoiceProvider>(
       () => _i777.ScanInvoiceProvider(

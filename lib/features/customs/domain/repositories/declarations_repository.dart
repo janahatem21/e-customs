@@ -12,4 +12,5 @@ abstract interface class DeclarationsRepository {
     String status,
   );
   Future<String> createDeclaration(String userId);
+  Future<DeclarationEntity?> getLatestCalculatedDeclaration(String userId);
 }

@@ -16,6 +16,7 @@ abstract interface class DeclarationsRemoteDataSource {
     String status,
   );
   Future<String> createDeclaration(String userId);
+  Future<DeclarationModel?> getLatestCalculatedDeclaration(String userId);
 }
 
 @LazySingleton(as: DeclarationsRemoteDataSource)
@@ -87,5 +88,24 @@ class DeclarationsRemoteDataSourceImpl implements DeclarationsRemoteDataSource {
     final docRef = await _declarationsRef(userId).add(model.toJson());
 
     return docRef.id;
+  }
+
+  @override
+  Future<DeclarationModel?> getLatestCalculatedDeclaration(
+    String userId,
+  ) async {
+    final snapshot =
+        await _declarationsRef(userId)
+            .where('status', isEqualTo: AppConstants.statusCalculated)
+            .limit(1)
+            .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      return DeclarationModel.fromJson(
+        snapshot.docs.first.data(),
+        snapshot.docs.first.id,
+      );
+    }
+    return null;
   }
 }

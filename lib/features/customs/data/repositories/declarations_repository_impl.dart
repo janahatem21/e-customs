@@ -39,4 +39,11 @@ class DeclarationsRepositoryImpl implements DeclarationsRepository {
   Future<String> createDeclaration(String userId) async {
     return await _remoteDataSource.createDeclaration(userId);
   }
+
+  @override
+  Future<DeclarationEntity?> getLatestCalculatedDeclaration(
+    String userId,
+  ) async {
+    return await _remoteDataSource.getLatestCalculatedDeclaration(userId);
+  }
 }
