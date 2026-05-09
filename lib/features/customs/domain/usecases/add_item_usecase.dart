@@ -3,27 +3,27 @@ import '../entities/item_entity.dart';
 import '../repositories/items_repository.dart';
 
 @injectable
-class AddItemUseCase {
+class AddItemsUseCase {
   final ItemsRepository _repository;
-  const AddItemUseCase(this._repository);
+  const AddItemsUseCase(this._repository);
 
-  Future<void> call(AddItemParams params) async {
-    return await _repository.addItem(
+  Future<void> call(AddItemsParams params) async {
+    return await _repository.addItems(
       userId: params.userId,
       declarationId: params.declarationId,
-      item: params.item,
+      items: params.items,
     );
   }
 }
 
-class AddItemParams {
+class AddItemsParams {
   final String userId;
   final String declarationId;
-  final ItemEntity item;
+  final List<ItemEntity> items;
 
-  AddItemParams({
+  AddItemsParams({
     required this.userId,
     required this.declarationId,
-    required this.item,
+    required this.items,
   });
 }

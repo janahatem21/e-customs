@@ -16,10 +16,10 @@ enum OcrState { idle, loading, success, error }
 @injectable
 class ScanInvoiceProvider extends ChangeNotifier {
   final ScanInvoiceUseCase _scanInvoiceUseCase;
-  final AddItemUseCase _addItemUseCase;
+  final AddItemsUseCase _addItemsUseCase;
   final ImagePicker _picker = ImagePicker();
 
-  ScanInvoiceProvider(this._scanInvoiceUseCase, this._addItemUseCase);
+  ScanInvoiceProvider(this._scanInvoiceUseCase, this._addItemsUseCase);
 
   OcrState _state = OcrState.idle;
   OcrState get state => _state;
@@ -121,23 +121,23 @@ class ScanInvoiceProvider extends ChangeNotifier {
         throw Exception('Could not ensure active declaration');
       }
 
-      for (final item in _items) {
-        await _addItemUseCase(
-          AddItemParams(
-            userId: userId,
-            declarationId: declarationId,
-            item: ItemModel(
-              name: item.name,
-              category: item.category ?? 'Other',
-              price: item.price,
-              quantity: item.quantity,
-              currency: item.currency ?? 'USD',
-              isExempted: false,
-              createdAt: Timestamp.now(),
-            ),
-          ),
-        );
-      }
+      final itemsToSave = _items.map((item) => ItemModel(
+        name: item.name,
+        category: item.category ?? 'Other',
+        price: item.price,
+        quantity: item.quantity,
+        currency: item.currency ?? 'USD',
+        isExempted: false,
+        createdAt: Timestamp.now(),
+      )).toList();
+
+      await _addItemsUseCase(
+        AddItemsParams(
+          userId: userId,
+          declarationId: declarationId,
+          items: itemsToSave,
+        ),
+      );
 
       _isSaving = false;
       _state = OcrState.success;

@@ -167,11 +167,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i577.DeclarationsRemoteDataSource>(),
       ),
     );
-    gh.factory<_i1062.AddItemUseCase>(
-      () => _i1062.AddItemUseCase(gh<_i53.ItemsRepository>()),
-    );
-    gh.factory<_i977.AddItemProvider>(
-      () => _i977.AddItemProvider(gh<_i1062.AddItemUseCase>()),
+    gh.factory<_i1062.AddItemsUseCase>(
+      () => _i1062.AddItemsUseCase(gh<_i53.ItemsRepository>()),
     );
     gh.factory<_i480.CalculateCustomsUseCase>(
       () => _i480.CalculateCustomsUseCase(gh<_i568.CustomsRepository>()),
@@ -230,6 +227,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1069.PaymentRepository>(
       () => _i235.PaymentRepositoryImpl(gh<_i321.PaymentRemoteDataSource>()),
     );
+    gh.factory<_i977.AddItemProvider>(
+      () => _i977.AddItemProvider(gh<_i1062.AddItemsUseCase>()),
+    );
     gh.factory<_i231.CalculateProvider>(
       () => _i231.CalculateProvider(
         gh<_i480.CalculateCustomsUseCase>(),
@@ -248,12 +248,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i347.GetLatestCalculatedDeclarationUseCase>(),
       ),
     );
-    gh.factory<_i777.ScanInvoiceProvider>(
-      () => _i777.ScanInvoiceProvider(
-        gh<_i523.ScanInvoiceUseCase>(),
-        gh<_i1062.AddItemUseCase>(),
-      ),
-    );
     gh.factory<_i399.HistoryProvider>(
       () => _i399.HistoryProvider(
         gh<_i790.GetDeclarationsUseCase>(),
@@ -263,6 +257,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i191.HomeProvider>(
       () => _i191.HomeProvider(gh<_i765.HistoryRepository>()),
+    );
+    gh.factory<_i777.ScanInvoiceProvider>(
+      () => _i777.ScanInvoiceProvider(
+        gh<_i523.ScanInvoiceUseCase>(),
+        gh<_i1062.AddItemsUseCase>(),
+      ),
     );
     gh.factory<_i924.ProfileProvider>(
       () => _i924.ProfileProvider(

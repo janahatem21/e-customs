@@ -8,8 +8,8 @@ enum AddItemState { idle, loading, success, error }
 
 @injectable
 class AddItemProvider extends ChangeNotifier {
-  final AddItemUseCase _addItemUseCase;
-  AddItemProvider(this._addItemUseCase);
+  final AddItemsUseCase _addItemsUseCase;
+  AddItemProvider(this._addItemsUseCase);
 
   final PageController pageController = PageController();
   int _currentStep = 0;
@@ -21,6 +21,9 @@ class AddItemProvider extends ChangeNotifier {
   String? _selectedCategory;
   String _selectedCurrency = 'USD';
   int _quantity = 1;
+
+  // Multiple Items State
+  final List<ItemEntity> _pendingItems = [];
 
   // State Management
   AddItemState _state = AddItemState.idle;
@@ -38,6 +41,7 @@ class AddItemProvider extends ChangeNotifier {
   bool get isLoading => _state == AddItemState.loading;
   bool get isSuccess => _state == AddItemState.success;
   String? get errorMessage => _errorMessage;
+  List<ItemEntity> get pendingItems => List.unmodifiable(_pendingItems);
 
   void nextStep() {
     if (_currentStep < 2) {
@@ -83,6 +87,49 @@ class AddItemProvider extends ChangeNotifier {
     }
   }
 
+  void addItemToList() {
+    if (!_validateInput()) return;
+
+    final item = ItemEntity(
+      name: nameController.text.trim(),
+      category: _selectedCategory!,
+      price: double.parse(priceController.text.trim()),
+      quantity: _quantity,
+      currency: _selectedCurrency,
+      isExempted: false,
+    );
+
+    _pendingItems.add(item);
+    _clearForm();
+    notifyListeners();
+  }
+
+  void removeItem(int index) {
+    if (index >= 0 && index < _pendingItems.length) {
+      _pendingItems.removeAt(index);
+      notifyListeners();
+    }
+  }
+
+  void updateItem(int index, ItemEntity item) {
+    if (index >= 0 && index < _pendingItems.length) {
+      _pendingItems[index] = item;
+      notifyListeners();
+    }
+  }
+
+  void _clearForm() {
+    nameController.clear();
+    priceController.clear();
+    _selectedCategory = null;
+    _selectedCurrency = 'USD';
+    _quantity = 1;
+    _currentStep = 0;
+    if (pageController.hasClients) {
+      pageController.jumpToPage(0);
+    }
+  }
+
   String getStepTitle() {
     switch (_currentStep) {
       case 0:
@@ -96,31 +143,30 @@ class AddItemProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addItem({
+  Future<void> saveAllItems({
     required String userId,
     required String declarationId,
   }) async {
-    if (!_validateInput()) return;
+    if (_pendingItems.isEmpty) {
+      _setError('Please add at least one item');
+      return;
+    }
 
     _state = AddItemState.loading;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final item = ItemEntity(
-        name: nameController.text.trim(),
-        category: _selectedCategory!,
-        price: double.parse(priceController.text.trim()),
-        quantity: _quantity,
-        currency: _selectedCurrency,
-        isExempted: false,
-      );
-
-      await _addItemUseCase(
-        AddItemParams(userId: userId, declarationId: declarationId, item: item),
+      await _addItemsUseCase(
+        AddItemsParams(
+          userId: userId,
+          declarationId: declarationId,
+          items: _pendingItems,
+        ),
       );
 
       _state = AddItemState.success;
+      _pendingItems.clear();
       notifyListeners();
     } catch (e) {
       _state = AddItemState.error;

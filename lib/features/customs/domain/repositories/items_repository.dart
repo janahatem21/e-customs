@@ -6,4 +6,10 @@ abstract interface class ItemsRepository {
     required String declarationId,
     required ItemEntity item,
   });
+
+  Future<void> addItems({
+    required String userId,
+    required String declarationId,
+    required List<ItemEntity> items,
+  });
 }

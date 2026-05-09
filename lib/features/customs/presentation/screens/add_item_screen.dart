@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/di/service_locator.dart';
+import '../../../../../core/services/firebase_services.dart';
+import '../../../../../core/widgets/app_button.dart';
 import '../provider/add_item_provider.dart';
-import '../widgets/add_item_bottom_buttons.dart';
-import '../widgets/add_item_progress_indicator.dart';
-import '../widgets/add_item_step1.dart';
-import '../widgets/add_item_step2.dart';
-import '../widgets/add_item_step3.dart';
+import '../widgets/add_item_category_dropdown.dart';
+import '../widgets/add_item_currency_dropdown.dart';
+import '../widgets/add_item_quantity_stepper.dart';
+import '../widgets/pending_items_list.dart';
+import '../../../../../core/widgets/app_input.dart';
+import '../../../../../core/widgets/app_card.dart';
 
 class AddItemScreen extends StatefulWidget {
   const AddItemScreen({super.key});
@@ -32,7 +36,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
     final provider = context.read<AddItemProvider>();
 
     if (provider.isSuccess) {
-      AppDialogs.showSuccessSnackBar(context, 'Item added successfully');
+      AppDialogs.showSuccessSnackBar(context, 'Items added successfully');
       Navigator.pop(context);
     } else if (provider.state == AddItemState.error &&
         provider.errorMessage != null) {
@@ -52,9 +56,9 @@ class _AddItemScreenState extends State<AddItemScreen> {
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
 
-        if (provider.nameController.text.isNotEmpty ||
-            provider.priceController.text.isNotEmpty ||
-            provider.currentStep > 0) {
+        if (provider.pendingItems.isNotEmpty ||
+            provider.nameController.text.isNotEmpty ||
+            provider.priceController.text.isNotEmpty) {
           final shouldPop = await AppDialogs.showDiscardDialog(context);
           if (shouldPop == true && context.mounted) {
             Navigator.pop(context);
@@ -73,14 +77,22 @@ class _AddItemScreenState extends State<AddItemScreen> {
               color: AppColors.blackText,
             ),
           ),
-          title: const Text('Add New Item'),
+          title: const Text('Add Items'),
         ),
         body: SafeArea(
           child: Column(
             children: [
-              const AddItemProgressIndicator(),
-              const Expanded(child: _AddItemPageView()),
-              AddItemBottomButtons(declarationId: declarationId),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildItemForm(provider),
+                      const PendingItemsList(),
+                    ],
+                  ),
+                ),
+              ),
+              _buildBottomAction(declarationId, provider),
             ],
           ),
         ),
@@ -88,26 +100,104 @@ class _AddItemScreenState extends State<AddItemScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    // Note: The listener is removed automatically when the provider is disposed
-    // if we use context.read in initState, but it's safer to handle if we want.
-    // However, AddItemProvider is provided via ChangeNotifierProvider which handles disposal.
-    super.dispose();
+  Widget _buildItemForm(AddItemProvider provider) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: AppCard(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Item Details',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.blackText,
+              ),
+            ),
+            const SizedBox(height: 20),
+            AppInput(
+              label: 'Product Name',
+              hintText: 'e.g. iPhone 15 Pro',
+              controller: provider.nameController,
+              prefixIcon: const Icon(IconsaxPlusLinear.box, size: 20),
+            ),
+            const SizedBox(height: 16),
+            const AddItemCategoryDropdown(),
+            const SizedBox(height: 16),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: AppInput(
+                    label: 'Price',
+                    hintText: '0.00',
+                    controller: provider.priceController,
+                    keyboardType: TextInputType.number,
+                    prefixIcon: const Icon(IconsaxPlusLinear.money_3, size: 20),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: AddItemCurrencyDropdown(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Quantity',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: AppColors.blackText,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const AddItemQuantityStepper(),
+            const SizedBox(height: 24),
+            AppButton(
+              text: 'Add to List',
+              variant: AppButtonVariant.outline,
+              onPressed: provider.addItemToList,
+              leadingIcon: const Icon(IconsaxPlusLinear.add, size: 20),
+            ),
+          ],
+        ),
+      ),
+    );
   }
-}
 
-class _AddItemPageView extends StatelessWidget {
-  const _AddItemPageView();
-
-  @override
-  Widget build(BuildContext context) {
-    final provider = context.read<AddItemProvider>();
-
-    return PageView(
-      controller: provider.pageController,
-      physics: const NeverScrollableScrollPhysics(),
-      children: const [AddItemStep1(), AddItemStep2(), AddItemStep3()],
+  Widget _buildBottomAction(String declarationId, AddItemProvider provider) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: AppButton(
+        text: 'Save All Items (${provider.pendingItems.length})',
+        isLoading: provider.isLoading,
+        onPressed: provider.pendingItems.isEmpty
+            ? null
+            : () {
+                final userId = getIt<FirebaseServices>().currentUser?.uid;
+                if (userId != null) {
+                  provider.saveAllItems(
+                    userId: userId,
+                    declarationId: declarationId,
+                  );
+                }
+              },
+        trailingIcon: const Icon(IconsaxPlusLinear.tick_circle, size: 20),
+      ),
     );
   }
 }

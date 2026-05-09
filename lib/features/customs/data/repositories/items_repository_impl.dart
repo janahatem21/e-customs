@@ -22,4 +22,18 @@ class ItemsRepositoryImpl implements ItemsRepository {
       item: itemModel,
     );
   }
+
+  @override
+  Future<void> addItems({
+    required String userId,
+    required String declarationId,
+    required List<ItemEntity> items,
+  }) async {
+    final itemModels = items.map((e) => ItemModel.fromEntity(e)).toList();
+    await _remoteDataSource.addItems(
+      userId: userId,
+      declarationId: declarationId,
+      items: itemModels,
+    );
+  }
 }
