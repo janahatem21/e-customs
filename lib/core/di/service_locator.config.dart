@@ -88,6 +88,20 @@ import 'package:e_customs/features/history/domain/usecases/get_declarations_usec
 import 'package:e_customs/features/history/presentation/provider/history_provider.dart'
     as _i399;
 import 'package:e_customs/features/home/providers/home_provider.dart' as _i191;
+import 'package:e_customs/features/notifications/data/datasources/notifications_remote_data_source.dart'
+    as _i259;
+import 'package:e_customs/features/notifications/data/repositories/notifications_repository_impl.dart'
+    as _i607;
+import 'package:e_customs/features/notifications/domain/repositories/notifications_repository.dart'
+    as _i610;
+import 'package:e_customs/features/notifications/domain/usecases/get_notifications_usecase.dart'
+    as _i1004;
+import 'package:e_customs/features/notifications/domain/usecases/get_unread_notifications_count_usecase.dart'
+    as _i950;
+import 'package:e_customs/features/notifications/domain/usecases/mark_all_notifications_as_read_usecase.dart'
+    as _i228;
+import 'package:e_customs/features/notifications/domain/usecases/mark_notification_as_read_usecase.dart'
+    as _i838;
 import 'package:e_customs/features/notifications/presentation/providers/notification_provider.dart'
     as _i106;
 import 'package:e_customs/features/payments/data/datasources/payment_remote_data_source.dart'
@@ -123,7 +137,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1060.UploadDocumentsProvider>(
       () => _i1060.UploadDocumentsProvider(),
     );
-    gh.factory<_i106.NotificationProvider>(() => _i106.NotificationProvider());
     gh.lazySingleton<_i612.FCMService>(() => _i612.FCMService());
     gh.lazySingleton<_i1000.FirebaseServices>(() => _i1000.FirebaseServices());
     gh.lazySingleton<_i693.OcrService>(() => _i693.OcrService());
@@ -132,6 +145,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i223.CustomsRemoteDataSource>(
       () => _i223.CustomsRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
+    );
+    gh.lazySingleton<_i259.NotificationsRemoteDataSource>(
+      () => _i259.NotificationsRemoteDataSourceImpl(
+        gh<_i1000.FirebaseServices>(),
+      ),
     );
     gh.lazySingleton<_i508.TrackingRepository>(
       () => _i508.TrackingRepositoryImpl(),
@@ -171,6 +189,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1062.AddItemsUseCase>(
       () => _i1062.AddItemsUseCase(gh<_i53.ItemsRepository>()),
+    );
+    gh.factory<_i610.NotificationsRepository>(
+      () => _i607.NotificationsRepositoryImpl(
+        gh<_i259.NotificationsRemoteDataSource>(),
+      ),
     );
     gh.factory<_i480.CalculateCustomsUseCase>(
       () => _i480.CalculateCustomsUseCase(gh<_i568.CustomsRepository>()),
@@ -232,6 +255,24 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i977.AddItemProvider>(
       () => _i977.AddItemProvider(gh<_i1062.AddItemsUseCase>()),
     );
+    gh.factory<_i1004.GetNotificationsUseCase>(
+      () => _i1004.GetNotificationsUseCase(gh<_i610.NotificationsRepository>()),
+    );
+    gh.factory<_i950.GetUnreadNotificationsCountUseCase>(
+      () => _i950.GetUnreadNotificationsCountUseCase(
+        gh<_i610.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i228.MarkAllNotificationsAsReadUseCase>(
+      () => _i228.MarkAllNotificationsAsReadUseCase(
+        gh<_i610.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i838.MarkNotificationAsReadUseCase>(
+      () => _i838.MarkNotificationAsReadUseCase(
+        gh<_i610.NotificationsRepository>(),
+      ),
+    );
     gh.factory<_i231.CalculateProvider>(
       () => _i231.CalculateProvider(
         gh<_i480.CalculateCustomsUseCase>(),
@@ -274,6 +315,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1049.CompletePaymentUseCase>(
       () => _i1049.CompletePaymentUseCase(gh<_i1069.PaymentRepository>()),
+    );
+    gh.factory<_i106.NotificationsProvider>(
+      () => _i106.NotificationsProvider(
+        gh<_i1004.GetNotificationsUseCase>(),
+        gh<_i228.MarkAllNotificationsAsReadUseCase>(),
+        gh<_i838.MarkNotificationAsReadUseCase>(),
+        gh<_i950.GetUnreadNotificationsCountUseCase>(),
+      ),
     );
     gh.factory<_i773.PaymentProvider>(
       () => _i773.PaymentProvider(

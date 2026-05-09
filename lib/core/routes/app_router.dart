@@ -85,7 +85,7 @@ class AppRouter {
         ),
     notifications:
         (context) => ChangeNotifierProvider(
-          create: (_) => getIt<NotificationProvider>(),
+          create: (_) => getIt<NotificationsProvider>(),
           child: const NotificationsScreen(),
         ),
     customs: (context) => const CustomsFormScreen(),

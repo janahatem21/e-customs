@@ -10,6 +10,7 @@ import 'core/theme/app_theme.dart';
 
 import 'package:provider/provider.dart';
 import 'core/providers/user_provider.dart';
+import 'features/notifications/presentation/providers/notification_provider.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -25,8 +26,11 @@ Future<void> main() async {
   await getIt<FCMService>().init();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => getIt<UserProvider>(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => getIt<UserProvider>()),
+        ChangeNotifierProvider(create: (_) => getIt<NotificationsProvider>()),
+      ],
       child: const ECustomsApp(),
     ),
   );

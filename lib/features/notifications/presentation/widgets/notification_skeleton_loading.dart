@@ -1,6 +1,6 @@
+import 'package:e_customs/features/notifications/domain/entities/notification_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:e_customs/features/notifications/data/entities/notification_entity.dart';
 import 'package:e_customs/features/notifications/presentation/widgets/notification_item.dart';
 
 class NotificationSkeletonLoading extends StatelessWidget {
@@ -18,9 +18,10 @@ class NotificationSkeletonLoading extends StatelessWidget {
             notification: NotificationEntity(
               id: 'skeleton-$index',
               title: 'Loading Title Text',
-              body: 'This is a skeleton loading shimmer effect for the notification body text.',
-              timestamp: DateTime.now(),
-              type: NotificationType.shipment,
+              body:
+                  'This is a skeleton loading shimmer effect for the notification body text.',
+              createdAt: DateTime.now(),
+              type: 'system',
               isRead: true,
             ),
             onTap: () {},
