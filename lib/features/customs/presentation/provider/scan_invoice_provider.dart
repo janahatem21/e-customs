@@ -9,6 +9,7 @@ import '../../data/models/item_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/services/firebase_services.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/services/notification_service.dart';
 import '../provider/declaration_provider.dart';
 
 enum OcrState { idle, loading, success, error }
@@ -17,9 +18,14 @@ enum OcrState { idle, loading, success, error }
 class ScanInvoiceProvider extends ChangeNotifier {
   final ScanInvoiceUseCase _scanInvoiceUseCase;
   final AddItemsUseCase _addItemsUseCase;
+  final NotificationService _notificationService;
   final ImagePicker _picker = ImagePicker();
 
-  ScanInvoiceProvider(this._scanInvoiceUseCase, this._addItemsUseCase);
+  ScanInvoiceProvider(
+    this._scanInvoiceUseCase,
+    this._addItemsUseCase,
+    this._notificationService,
+  );
 
   OcrState _state = OcrState.idle;
   OcrState get state => _state;
@@ -121,15 +127,20 @@ class ScanInvoiceProvider extends ChangeNotifier {
         throw Exception('Could not ensure active declaration');
       }
 
-      final itemsToSave = _items.map((item) => ItemModel(
-        name: item.name,
-        category: item.category ?? 'Other',
-        price: item.price,
-        quantity: item.quantity,
-        currency: item.currency ?? 'USD',
-        isExempted: false,
-        createdAt: Timestamp.now(),
-      )).toList();
+      final itemsToSave =
+          _items
+              .map(
+                (item) => ItemModel(
+                  name: item.name,
+                  category: item.category ?? 'Other',
+                  price: item.price,
+                  quantity: item.quantity,
+                  currency: item.currency ?? 'USD',
+                  isExempted: false,
+                  createdAt: Timestamp.now(),
+                ),
+              )
+              .toList();
 
       await _addItemsUseCase(
         AddItemsParams(
@@ -138,6 +149,9 @@ class ScanInvoiceProvider extends ChangeNotifier {
           items: itemsToSave,
         ),
       );
+
+      // Trigger Notification
+      await _notificationService.notifyOCRImportSuccess(userId, declarationId);
 
       _isSaving = false;
       _state = OcrState.success;

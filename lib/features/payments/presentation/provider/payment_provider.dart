@@ -5,6 +5,7 @@ import '../../domain/entities/payment_result_entity.dart';
 import '../../domain/usecases/complete_payment_usecase.dart';
 import '../../../customs/domain/entities/declaration_entity.dart';
 import '../../../customs/domain/repositories/declarations_repository.dart';
+import '../../../../core/services/notification_service.dart';
 
 enum AppPaymentMethod { card, wallet }
 
@@ -12,10 +13,12 @@ enum AppPaymentMethod { card, wallet }
 class PaymentProvider extends ChangeNotifier {
   final CompletePaymentUseCase _completePaymentUseCase;
   final DeclarationsRepository _declarationsRepository;
+  final NotificationService _notificationService;
 
   PaymentProvider(
     this._completePaymentUseCase,
     this._declarationsRepository,
+    this._notificationService,
   );
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -49,7 +52,7 @@ class PaymentProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   PaymentResultEntity? get paymentResult => _paymentResult;
   AppPaymentMethod get selectedMethod => _selectedMethod;
-  
+
   String? get declarationId => _declarationId;
   String get shipmentId => _shipmentId;
   double get totalAmount => _totalAmount;
@@ -66,7 +69,7 @@ class PaymentProvider extends ChangeNotifier {
     _shipmentId = declaration.id?.substring(0, 8).toUpperCase() ?? "EC-CUSTOMS";
     _totalAmount = declaration.totalAmount;
     _currency = "USD";
-    
+
     _breakdown = [
       FeeEntity(
         title: "Customs Fees",
@@ -167,6 +170,11 @@ class PaymentProvider extends ChangeNotifier {
       );
 
       _paymentResult = result;
+
+      // Trigger Notifications
+      await _notificationService.notifyPaymentSuccess(userId, declarationId);
+      await _notificationService.notifyQRReady(userId, declarationId);
+
       _isLoading = false;
       notifyListeners();
       return true;

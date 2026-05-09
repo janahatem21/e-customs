@@ -6,6 +6,7 @@ import '../../domain/usecases/get_items_usecase.dart';
 import '../../domain/usecases/get_declaration_by_id_usecase.dart';
 import '../../domain/usecases/confirm_calculation_usecase.dart';
 import '../../domain/entities/item_entity.dart';
+import '../../../../core/services/notification_service.dart';
 
 enum CalculateState { idle, loading, success, error, confirming }
 
@@ -15,12 +16,14 @@ class CalculateProvider extends ChangeNotifier {
   final GetItemsUseCase _getItemsUseCase;
   final GetDeclarationByIdUseCase _getDeclarationByIdUseCase;
   final ConfirmCalculationUseCase _confirmCalculationUseCase;
+  final NotificationService _notificationService;
 
   CalculateProvider(
     this._calculateCustomsUseCase,
     this._getItemsUseCase,
     this._getDeclarationByIdUseCase,
     this._confirmCalculationUseCase,
+    this._notificationService,
   );
 
   CalculateState _state = CalculateState.idle;
@@ -92,6 +95,10 @@ class CalculateProvider extends ChangeNotifier {
 
     try {
       await _confirmCalculationUseCase(userId, declarationId);
+
+      // Trigger Notification
+      await _notificationService.notifyCustomsCalculated(userId, declarationId);
+
       _state = CalculateState.success;
       notifyListeners();
     } catch (e) {

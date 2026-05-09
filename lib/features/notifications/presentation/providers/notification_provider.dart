@@ -119,7 +119,7 @@ class NotificationsProvider extends ChangeNotifier {
       await _markNotificationAsReadUseCase(userId, notificationId);
 
       final n = _notifications[index];
-      _notifications[index] = NotificationEntity(
+      final updatedNotification = NotificationEntity(
         id: n.id,
         title: n.title,
         body: n.body,
@@ -128,6 +128,10 @@ class NotificationsProvider extends ChangeNotifier {
         createdAt: n.createdAt,
         declarationId: n.declarationId,
       );
+
+      // Replace list with a new reference to trigger Selector/Provider updates
+      _notifications = List<NotificationEntity>.from(_notifications);
+      _notifications[index] = updatedNotification;
 
       if (_unreadCount > 0) _unreadCount--;
       notifyListeners();
