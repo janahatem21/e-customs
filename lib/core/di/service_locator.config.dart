@@ -122,7 +122,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1060.UploadDocumentsProvider>(
       () => _i1060.UploadDocumentsProvider(),
     );
-    gh.factory<_i191.HomeProvider>(() => _i191.HomeProvider());
     gh.factory<_i106.NotificationProvider>(() => _i106.NotificationProvider());
     gh.lazySingleton<_i1000.FirebaseServices>(() => _i1000.FirebaseServices());
     gh.lazySingleton<_i693.OcrService>(() => _i693.OcrService());
@@ -261,6 +260,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i617.GetDeclarationDetailsUseCase>(),
         gh<_i264.GetDeclarationItemsUseCase>(),
       ),
+    );
+    gh.factory<_i191.HomeProvider>(
+      () => _i191.HomeProvider(gh<_i765.HistoryRepository>()),
     );
     gh.factory<_i924.ProfileProvider>(
       () => _i924.ProfileProvider(
