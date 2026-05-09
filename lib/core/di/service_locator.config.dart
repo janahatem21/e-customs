@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:e_customs/core/providers/user_provider.dart' as _i479;
+import 'package:e_customs/core/services/fcm_service.dart' as _i612;
 import 'package:e_customs/core/services/firebase_services.dart' as _i1000;
 import 'package:e_customs/core/services/ocr_service.dart' as _i693;
 import 'package:e_customs/features/auth/data/datasources/auth_remote_datasource.dart'
@@ -123,6 +124,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1060.UploadDocumentsProvider(),
     );
     gh.factory<_i106.NotificationProvider>(() => _i106.NotificationProvider());
+    gh.lazySingleton<_i612.FCMService>(() => _i612.FCMService());
     gh.lazySingleton<_i1000.FirebaseServices>(() => _i1000.FirebaseServices());
     gh.lazySingleton<_i693.OcrService>(() => _i693.OcrService());
     gh.lazySingleton<_i112.ItemsRemoteDataSource>(

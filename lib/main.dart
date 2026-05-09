@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:e_customs/core/di/service_locator.dart';
 import 'package:e_customs/core/services/shared_preferences_service.dart';
+import 'package:e_customs/core/services/fcm_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/routes/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -21,6 +22,7 @@ Future<void> main() async {
   );
   await SharedPreferencesService.init();
   configureDependencies();
+  await getIt<FCMService>().init();
 
   runApp(
     ChangeNotifierProvider(
