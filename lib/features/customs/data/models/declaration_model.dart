@@ -9,6 +9,8 @@ class DeclarationModel extends DeclarationEntity {
     required super.totalVAT,
     required super.totalAmount,
     super.createdAt,
+    super.qrData,
+    super.paidAt,
   });
 
   factory DeclarationModel.fromJson(Map<String, dynamic> json, String id) {
@@ -21,6 +23,11 @@ class DeclarationModel extends DeclarationEntity {
       createdAt:
           json['createdAt'] != null
               ? (json['createdAt'] as Timestamp).toDate()
+              : null,
+      qrData: json['qrData'] as String?,
+      paidAt:
+          json['paidAt'] != null
+              ? (json['paidAt'] as Timestamp).toDate()
               : null,
     );
   }
@@ -35,6 +42,8 @@ class DeclarationModel extends DeclarationEntity {
           createdAt != null
               ? Timestamp.fromDate(createdAt!)
               : FieldValue.serverTimestamp(),
+      'qrData': qrData,
+      'paidAt': paidAt != null ? Timestamp.fromDate(paidAt!) : null,
     };
   }
 
@@ -46,6 +55,8 @@ class DeclarationModel extends DeclarationEntity {
       totalVAT: entity.totalVAT,
       totalAmount: entity.totalAmount,
       createdAt: entity.createdAt,
+      qrData: entity.qrData,
+      paidAt: entity.paidAt,
     );
   }
 }

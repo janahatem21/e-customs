@@ -25,7 +25,6 @@ import '../../features/payments/presentation/provider/payment_provider.dart';
 import '../../features/profile/presentation/provider/profile_provider.dart';
 import '../../features/customs/presentation/screens/add_item_screen.dart';
 import '../../features/customs/presentation/screens/scan_invoice_screen.dart';
-import '../../features/customs/presentation/screens/declaration_screen.dart';
 import '../../features/customs/presentation/screens/calculate_customs_screen.dart';
 import '../../features/payments/presentation/screens/payment_screen.dart';
 import '../../features/payments/presentation/screens/payment_success_screen.dart';
@@ -48,7 +47,6 @@ class AppRouter {
   static const String addItem = '/add-item';
   static const String createDeclaration = '/create-declaration';
   static const String scanInvoice = '/scan-invoice';
-  static const String declaration = '/declaration';
   static const String calculateCustoms = '/calculate-customs';
   static const String payment = '/payment';
   static const String paymentSuccess = '/payment-success';
@@ -125,7 +123,6 @@ class AppRouter {
           ],
           child: const ScanInvoiceScreen(),
         ),
-    declaration: (context) => const DeclarationScreen(),
     calculateCustoms:
         (context) => MultiProvider(
           providers: [

@@ -8,6 +8,8 @@ import '../../../../core/routes/app_router.dart';
 import '../../home/screens/home_screen.dart';
 import '../../profile/presentation/screens/profile_screen.dart';
 import '../../profile/presentation/provider/profile_provider.dart';
+import '../../history/presentation/screens/history_screen.dart';
+import '../../history/presentation/provider/history_provider.dart';
 import '../providers/layout_provider.dart';
 import '../widgets/bottom_nav.dart';
 import 'package:e_customs/core/di/service_locator.dart';
@@ -19,6 +21,10 @@ class LayoutScreen extends StatelessWidget {
     ChangeNotifierProvider(
       create: (_) => getIt<HomeProvider>(),
       child: const HomeScreen(),
+    ),
+    ChangeNotifierProvider(
+      create: (_) => getIt<HistoryProvider>(),
+      child: const HistoryScreen(),
     ),
     ChangeNotifierProvider(
       create: (_) => getIt<ProfileProvider>(),

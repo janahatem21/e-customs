@@ -12,7 +12,7 @@ class BottomNav extends StatelessWidget {
     final layoutProvider = context.watch<LayoutProvider>();
     final currentIndex = layoutProvider.currentIndex;
 
-    const int totalItems = 2;
+    const int totalItems = 3;
     return Container(
       height: 85,
       decoration: BoxDecoration(
@@ -61,10 +61,18 @@ class BottomNav extends StatelessWidget {
               _NavItem(
                 index: 1,
                 currentIndex: currentIndex,
+                activeIcon: IconsaxPlusBold.receipt_item,
+                inactiveIcon: IconsaxPlusLinear.receipt_item,
+                label: 'History',
+                onTap: () => layoutProvider.setIndex(1),
+              ),
+              _NavItem(
+                index: 2,
+                currentIndex: currentIndex,
                 activeIcon: IconsaxPlusBold.user,
                 inactiveIcon: IconsaxPlusLinear.user,
                 label: 'Profile',
-                onTap: () => layoutProvider.setIndex(1),
+                onTap: () => layoutProvider.setIndex(2),
               ),
             ],
           ),

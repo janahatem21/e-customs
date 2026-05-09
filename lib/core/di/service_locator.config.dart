@@ -70,6 +70,22 @@ import 'package:e_customs/features/customs/presentation/provider/scan_invoice_pr
     as _i777;
 import 'package:e_customs/features/documents/presentation/provider/upload_documents_provider.dart'
     as _i1060;
+import 'package:e_customs/features/history/data/datasources/history_remote_data_source.dart'
+    as _i1060;
+import 'package:e_customs/features/history/data/datasources/history_remote_data_source_impl.dart'
+    as _i809;
+import 'package:e_customs/features/history/data/repositories/history_repository_impl.dart'
+    as _i163;
+import 'package:e_customs/features/history/domain/repositories/history_repository.dart'
+    as _i765;
+import 'package:e_customs/features/history/domain/usecases/get_declaration_details_usecase.dart'
+    as _i617;
+import 'package:e_customs/features/history/domain/usecases/get_declaration_items_usecase.dart'
+    as _i264;
+import 'package:e_customs/features/history/domain/usecases/get_declarations_usecase.dart'
+    as _i790;
+import 'package:e_customs/features/history/presentation/provider/history_provider.dart'
+    as _i399;
 import 'package:e_customs/features/home/providers/home_provider.dart' as _i191;
 import 'package:e_customs/features/notifications/presentation/providers/notification_provider.dart'
     as _i106;
@@ -141,6 +157,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i53.ItemsRepository>(
       () => _i341.ItemsRepositoryImpl(gh<_i112.ItemsRemoteDataSource>()),
     );
+    gh.lazySingleton<_i1060.HistoryRemoteDataSource>(
+      () => _i809.HistoryRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
+    );
     gh.lazySingleton<_i321.PaymentRemoteDataSource>(
       () => _i321.PaymentRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
     );
@@ -166,6 +185,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i511.OcrRepository>(
       () => _i961.OcrRepositoryImpl(gh<_i80.OcrRemoteDataSource>()),
+    );
+    gh.factory<_i765.HistoryRepository>(
+      () => _i163.HistoryRepositoryImpl(gh<_i1060.HistoryRemoteDataSource>()),
     );
     gh.lazySingleton<_i682.ProfileRepository>(
       () => _i682.ProfileRepositoryImpl(gh<_i398.ProfileRemoteDataSource>()),
@@ -197,6 +219,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i479.UserProvider>(),
       ),
     );
+    gh.factory<_i617.GetDeclarationDetailsUseCase>(
+      () => _i617.GetDeclarationDetailsUseCase(gh<_i765.HistoryRepository>()),
+    );
+    gh.factory<_i264.GetDeclarationItemsUseCase>(
+      () => _i264.GetDeclarationItemsUseCase(gh<_i765.HistoryRepository>()),
+    );
+    gh.factory<_i790.GetDeclarationsUseCase>(
+      () => _i790.GetDeclarationsUseCase(gh<_i765.HistoryRepository>()),
+    );
     gh.factory<_i1069.PaymentRepository>(
       () => _i235.PaymentRepositoryImpl(gh<_i321.PaymentRemoteDataSource>()),
     );
@@ -222,6 +253,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i777.ScanInvoiceProvider(
         gh<_i523.ScanInvoiceUseCase>(),
         gh<_i1062.AddItemUseCase>(),
+      ),
+    );
+    gh.factory<_i399.HistoryProvider>(
+      () => _i399.HistoryProvider(
+        gh<_i790.GetDeclarationsUseCase>(),
+        gh<_i617.GetDeclarationDetailsUseCase>(),
+        gh<_i264.GetDeclarationItemsUseCase>(),
       ),
     );
     gh.factory<_i924.ProfileProvider>(
