@@ -40,7 +40,7 @@ class AppButton extends StatelessWidget {
                 : (variant == AppButtonVariant.ghost
                     ? Colors.transparent
                     : (variant == AppButtonVariant.tonal
-                        ? AppColors.primary.withOpacity(0.1)
+                        ? AppColors.primary.withValues(alpha: 0.1)
                         : null)),
         foregroundColor:
             color ??

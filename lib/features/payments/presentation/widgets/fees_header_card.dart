@@ -79,7 +79,7 @@ class FeesHeaderCard extends StatelessWidget {
             textBaseline: TextBaseline.alphabetic,
             children: [
               Text(
-                "€${totalAmount.toStringAsFixed(2)}",
+                "\$${totalAmount.toStringAsFixed(2)}",
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 40,

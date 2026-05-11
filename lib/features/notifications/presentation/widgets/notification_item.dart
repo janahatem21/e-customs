@@ -1,7 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:e_customs/core/constants/app_colors.dart';
-import 'package:e_customs/features/notifications/data/entities/notification_entity.dart';
+import 'package:e_customs/features/notifications/domain/entities/notification_entity.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:iconsax_plus/iconsax_plus.dart';
+
+extension NotificationTypeHelpers on String {
+  IconData get icon {
+    final t = toLowerCase();
+    if (t.contains('payment')) return IconsaxPlusLinear.wallet_check;
+    if (t.contains('declaration')) return IconsaxPlusLinear.box;
+    if (t.contains('qr')) return IconsaxPlusLinear.scan_barcode;
+    if (t.contains('action_required')) return IconsaxPlusLinear.danger;
+    return IconsaxPlusLinear.setting_2;
+  }
+
+  Color get color {
+    final t = toLowerCase();
+    if (t.contains('payment')) return AppColors.success;
+    if (t.contains('declaration')) return AppColors.info;
+    if (t.contains('qr')) return AppColors.primary;
+    if (t.contains('action_required')) return AppColors.warning;
+    return AppColors.primary;
+  }
+}
 
 class NotificationItem extends StatelessWidget {
   final NotificationEntity notification;
@@ -16,6 +37,8 @@ class NotificationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final typeIcon = notification.type.icon;
+    final typeColor = notification.type.color;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -55,19 +78,14 @@ class NotificationItem extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color:
-                                notification.isRead
-                                    ? notification.type.color.withValues(
-                                      alpha: 0.08,
-                                    )
-                                    : notification.type.color.withValues(
-                                      alpha: 0.12,
-                                    ),
+                            color: typeColor.withValues(
+                              alpha: notification.isRead ? 0.08 : 0.12,
+                            ),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Icon(
-                            notification.type.icon,
-                            color: notification.type.color,
+                            typeIcon,
+                            color: typeColor,
                             size: 24,
                           ),
                         ),
@@ -99,7 +117,7 @@ class NotificationItem extends StatelessWidget {
                                   const SizedBox(width: 8),
                                   Text(
                                     timeago
-                                        .format(notification.timestamp)
+                                        .format(notification.createdAt)
                                         .toUpperCase(),
                                     style: theme.textTheme.labelSmall?.copyWith(
                                       fontSize: 10,

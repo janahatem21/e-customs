@@ -16,9 +16,10 @@ class OnboardingActionButtons extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
-        child: provider.isLastPage
-            ? const _LastPageActions()
-            : provider.isFirstPage
+        child:
+            provider.isLastPage
+                ? const _LastPageActions()
+                : provider.isFirstPage
                 ? const _FirstPageActions()
                 : const _MiddlePageActions(),
       ),
@@ -39,11 +40,10 @@ class _FirstPageActions extends StatelessWidget {
           onPressed: () => provider.nextPage(context, AppRouter.login),
           icon: Icons.arrow_forward_rounded,
         ),
-        const SizedBox(height: 16),
-        TextButton(
-          onPressed: () => provider.skip(context, AppRouter.login),
-          child: const Text(AppStrings.skipToLogin),
-        ),
+        // TextButton(
+        //   onPressed: () => provider.skip(context, AppRouter.login),
+        //   child: const Text(AppStrings.skipToLogin),
+        // ),
       ],
     );
   }
@@ -93,7 +93,11 @@ class _LastPageActions extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.shield_rounded, size: 14, color: AppColors.subtitleColor),
+            const Icon(
+              Icons.shield_rounded,
+              size: 14,
+              color: AppColors.subtitleColor,
+            ),
             const SizedBox(width: 6),
             Text(
               AppStrings.secureEncryption.toUpperCase(),
@@ -148,4 +152,3 @@ class _MainButton extends StatelessWidget {
     );
   }
 }
-

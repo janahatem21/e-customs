@@ -1,47 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:iconsax_plus/iconsax_plus.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/di/service_locator.dart';
+import '../../../../core/services/firebase_services.dart';
 import '../../../../core/routes/app_router.dart';
-import '../../../../core/widgets/app_card.dart';
+import '../../customs/presentation/provider/declaration_provider.dart';
+import '../models/quick_action.dart';
+import 'package:provider/provider.dart';
 
 class QuickActionsSection extends StatelessWidget {
   const QuickActionsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final List<Map<String, dynamic>> actions = [
-      {
-        'title': 'Add Item',
-        'icon': IconsaxPlusLinear.add_square,
-        'color': const Color(0xFF6366F1),
-        'subtitle': 'New declaration',
-        'route': AppRouter.addItem,
-      },
-      {
-        'title': 'Scan Invoice',
-        'icon': IconsaxPlusLinear.document_filter,
-        'color': const Color(0xFF10B981),
-        'subtitle': 'AI processing',
-        'route': AppRouter.scanInvoice,
-      },
-      {
-        'title': 'Declarations',
-        'icon': IconsaxPlusLinear.document_text_1,
-        'color': const Color(0xFFF59E0B),
-        'subtitle': 'History & status',
-        'route': AppRouter.declaration,
-      },
-      {
-        'title': 'Calculator',
-        'icon': IconsaxPlusLinear.calculator,
-        'color': const Color(0xFFEC4899),
-        'subtitle': 'Duty estimate',
-        'route': AppRouter.calculateCustoms,
-      },
-    ];
+    final actions = QuickAction.defaultActions;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -58,58 +30,182 @@ class QuickActionsSection extends StatelessWidget {
         ),
         itemBuilder: (context, index) {
           final action = actions[index];
-          final color = action['color'] as Color;
-          
-          return AppCard(
-                padding: const EdgeInsets.all(16),
-                onTap: () {
-                  if (action.containsKey('route')) {
-                    Navigator.pushNamed(context, action['route'] as String);
+
+          return _PremiumActionCard(
+                title: action.title,
+                subtitle: action.subtitle,
+                icon: action.icon,
+                color: action.color,
+                onTap: () async {
+                  if (action.route == AppRouter.addItem) {
+                    final userId = getIt<FirebaseServices>().currentUser?.uid;
+                    if (userId != null) {
+                      final declarationProvider =
+                          context.read<DeclarationProvider>();
+                      final id = await declarationProvider
+                          .ensureActiveDeclaration(userId);
+
+                      if (!context.mounted) return;
+
+                      if (id != null) {
+                        Navigator.pushNamed(
+                          context,
+                          AppRouter.addItem,
+                          arguments: id,
+                        );
+                      } else {
+                        Navigator.pushNamed(
+                          context,
+                          AppRouter.createDeclaration,
+                          arguments: AppRouter.addItem,
+                        );
+                      }
+                    }
+                    return;
+                  }
+
+                  if (action.route == AppRouter.payment) {
+                    final userId = getIt<FirebaseServices>().currentUser?.uid;
+                    if (userId != null) {
+                      final declarationProvider =
+                          context.read<DeclarationProvider>();
+                      final id = await declarationProvider
+                          .getLatestCalculatedDeclaration(userId);
+
+                      if (!context.mounted) return;
+
+                      if (id != null) {
+                        Navigator.pushNamed(
+                          context,
+                          AppRouter.payment,
+                          arguments: id,
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('No calculated declarations found'),
+                          ),
+                        );
+                      }
+                    }
+                    return;
+                  }
+
+                  if (action.route != null) {
+                    Navigator.pushNamed(context, action.route!);
                   }
                 },
+              )
+              .animate()
+              .fadeIn(delay: (200 + (index * 80)).ms, duration: 500.ms)
+              .slideY(begin: 0.2, end: 0, curve: Curves.easeOutBack);
+        },
+      ),
+    );
+  }
+}
+
+class _PremiumActionCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _PremiumActionCard({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(24),
+          child: Stack(
+            children: [
+              // Decorative background element
+              Positioned(
+                right: -15,
+                top: -15,
+                child: Icon(
+                  icon,
+                  size: 80,
+                  color: color.withValues(alpha: 0.04),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: color.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        gradient: LinearGradient(
+                          colors: [color, color.withValues(alpha: 0.8)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: color.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
-                      child: Icon(
-                        action['icon'] as IconData,
-                        size: 24,
-                        color: color,
-                      ),
+                      child: Icon(icon, size: 24, color: Colors.white),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          action['title'] as String,
-                          style: theme.textTheme.titleSmall?.copyWith(
+                          title,
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
+                            fontSize: 16,
                             color: AppColors.blackText,
+                            letterSpacing: -0.3,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 4),
                         Text(
-                          action['subtitle'] as String,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: AppColors.greyText,
+                          subtitle,
+                          style: TextStyle(
+                            color: AppColors.greyText.withValues(alpha: 0.8),
                             fontSize: 11,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
                     ),
                   ],
                 ),
-              )
-              .animate()
-              .fadeIn(delay: (300 + (index * 50)).ms, duration: 400.ms)
-              .slideY(begin: 0.1, end: 0, curve: Curves.easeOutQuad);
-        },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

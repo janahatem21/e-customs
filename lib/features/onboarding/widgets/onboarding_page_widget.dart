@@ -93,10 +93,7 @@ class OnboardingPageWidget extends StatelessWidget {
             color: AppColors.primary.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(99),
           ),
-          child: Text(
-            model.tag,
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
+          child: Text(model.tag, style: Theme.of(context).textTheme.labelLarge),
         ),
         const SizedBox(height: 24),
         Padding(

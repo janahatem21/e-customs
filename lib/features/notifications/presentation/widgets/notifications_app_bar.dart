@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:e_customs/core/constants/app_colors.dart';
 import 'package:e_customs/features/notifications/presentation/providers/notification_provider.dart';
+import 'package:e_customs/core/providers/user_provider.dart';
 
 class NotificationsAppBar extends AppBar {
   NotificationsAppBar({super.key, required BuildContext context})
@@ -22,11 +23,17 @@ class NotificationsAppBar extends AppBar {
           ),
         ),
         actions: [
-          Consumer<NotificationProvider>(
-            builder: (context, provider, child) {
-              if (provider.unreadCount == 0) return const SizedBox.shrink();
+          Selector<NotificationsProvider, int>(
+            selector: (_, p) => p.unreadCount,
+            builder: (context, unreadCount, _) {
+              if (unreadCount == 0) return const SizedBox.shrink();
               return TextButton(
-                onPressed: () => provider.markAllAsRead(),
+                onPressed: () {
+                  final userId = context.read<UserProvider>().user?.id;
+                  if (userId != null) {
+                    context.read<NotificationsProvider>().markAllAsRead(userId);
+                  }
+                },
                 child: const Text('Mark all read'),
               );
             },

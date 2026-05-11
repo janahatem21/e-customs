@@ -1,68 +1,131 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:e_customs/features/notifications/data/entities/notification_entity.dart';
+import '../../domain/entities/notification_entity.dart';
+import '../../domain/usecases/get_notifications_usecase.dart';
+import '../../domain/usecases/mark_all_notifications_as_read_usecase.dart';
+import '../../domain/usecases/mark_notification_as_read_usecase.dart';
+import '../../domain/usecases/get_unread_notifications_count_usecase.dart';
 
 @injectable
-class NotificationProvider extends ChangeNotifier {
-  List<NotificationEntity> _notifications = [];
+class NotificationsProvider extends ChangeNotifier {
+  final GetNotificationsUseCase _getNotificationsUseCase;
+  final MarkAllNotificationsAsReadUseCase _markAllNotificationsAsReadUseCase;
+  final MarkNotificationAsReadUseCase _markNotificationAsReadUseCase;
+  final GetUnreadNotificationsCountUseCase _getUnreadNotificationsCountUseCase;
 
-  NotificationType? _selectedType;
-  NotificationType? get selectedType => _selectedType;
-
-  List<NotificationEntity> get notifications {
-    if (_selectedType == null) return _notifications;
-    return _notifications.where((n) => n.type == _selectedType).toList();
-  }
-
-  void setFilter(NotificationType? type) {
-    _selectedType = type;
-    notifyListeners();
-  }
+  NotificationsProvider(
+    this._getNotificationsUseCase,
+    this._markAllNotificationsAsReadUseCase,
+    this._markNotificationAsReadUseCase,
+    this._getUnreadNotificationsCountUseCase,
+  );
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  NotificationProvider() {
-    _loadNotifications();
-  }
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
 
-  void _loadNotifications() async {
-    _isLoading = true;
-    notifyListeners();
+  List<NotificationEntity> _notifications = [];
+  String _selectedFilter = 'All';
+  String get selectedFilter => _selectedFilter;
 
-    // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 800));
-    _notifications = List.from(NotificationEntity.dummyNotifications);
+  int _unreadCount = 0;
+  int get unreadCount => _unreadCount;
 
-    _isLoading = false;
-    notifyListeners();
-  }
+  StreamSubscription<List<NotificationEntity>>? _notificationsSub;
+  StreamSubscription<int>? _unreadCountSub;
 
-  void markAsRead(String id) {
-    final index = _notifications.indexWhere((n) => n.id == id);
-    if (index != -1 && !_notifications[index].isRead) {
-      _notifications[index].isRead = true;
-      notifyListeners();
-    }
-  }
+  List<NotificationEntity> get notifications => filteredNotifications;
 
-  void markAllAsRead() {
-    bool changed = false;
-    for (var notification in _notifications) {
-      if (!notification.isRead) {
-        notification.isRead = true;
-        changed = true;
+  List<NotificationEntity> get filteredNotifications {
+    if (_selectedFilter == 'All') return _notifications;
+
+    return _notifications.where((n) {
+      final type = n.type.toLowerCase();
+      switch (_selectedFilter) {
+        case 'Declarations':
+          return type == 'declaration' ||
+              type == 'action_required' ||
+              type == 'qr';
+        case 'Payments':
+          return type == 'payment';
+        case 'System':
+          return type == 'system';
+        default:
+          return false;
       }
-    }
-    if (changed) {
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    _notificationsSub?.cancel();
+    _unreadCountSub?.cancel();
+    super.dispose();
+  }
+
+  void loadNotifications(String userId) {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    // Cancel existing subscriptions if any
+    _notificationsSub?.cancel();
+    _unreadCountSub?.cancel();
+
+    // Listen to notifications stream
+    _notificationsSub = _getNotificationsUseCase(userId).listen(
+      (notifications) {
+        _notifications = notifications;
+        _isLoading = false;
+        notifyListeners();
+      },
+      onError: (e) {
+        _errorMessage = e.toString();
+        _isLoading = false;
+        notifyListeners();
+      },
+    );
+
+    // Listen to unread count stream
+    _unreadCountSub = _getUnreadNotificationsCountUseCase(userId).listen(
+      (count) {
+        _unreadCount = count;
+        notifyListeners();
+      },
+      onError: (e) {
+        debugPrint('Error listening to unread count: $e');
+      },
+    );
+  }
+
+  void changeFilter(String filter) {
+    if (_selectedFilter == filter) return;
+    _selectedFilter = filter;
+    notifyListeners();
+  }
+
+  Future<void> markAllAsRead(String userId) async {
+    if (_unreadCount == 0) return;
+
+    try {
+      await _markAllNotificationsAsReadUseCase(userId);
+      // No need to manually update local state; Firestore Stream will push the update
+    } catch (e) {
+      _errorMessage = e.toString();
       notifyListeners();
     }
   }
 
-  void deleteNotification(String id) {
-    _notifications.removeWhere((n) => n.id == id);
-    notifyListeners();
+  Future<void> markAsRead(String userId, String notificationId) async {
+    try {
+      await _markNotificationAsReadUseCase(userId, notificationId);
+      // No need to manually update local state; Firestore Stream will push the update
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
   }
-
-  int get unreadCount => _notifications.where((n) => !n.isRead).length;
 }

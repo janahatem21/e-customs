@@ -12,6 +12,7 @@ class BottomNav extends StatelessWidget {
     final layoutProvider = context.watch<LayoutProvider>();
     final currentIndex = layoutProvider.currentIndex;
 
+    const int totalItems = 3;
     return Container(
       height: 85,
       decoration: BoxDecoration(
@@ -31,8 +32,9 @@ class BottomNav extends StatelessWidget {
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOutCubic,
             left:
-                (MediaQuery.of(context).size.width / 5) * currentIndex +
-                (MediaQuery.of(context).size.width / 10) -
+                (MediaQuery.of(context).size.width / totalItems) *
+                    currentIndex +
+                (MediaQuery.of(context).size.width / (totalItems * 2)) -
                 28,
             top: 15,
             child: Container(
@@ -59,34 +61,18 @@ class BottomNav extends StatelessWidget {
               _NavItem(
                 index: 1,
                 currentIndex: currentIndex,
-                activeIcon: IconsaxPlusBold.location,
-                inactiveIcon: IconsaxPlusLinear.location,
-                label: 'Track',
+                activeIcon: IconsaxPlusBold.receipt_item,
+                inactiveIcon: IconsaxPlusLinear.receipt_item,
+                label: 'History',
                 onTap: () => layoutProvider.setIndex(1),
               ),
               _NavItem(
                 index: 2,
                 currentIndex: currentIndex,
-                activeIcon: IconsaxPlusBold.document,
-                inactiveIcon: IconsaxPlusLinear.document,
-                label: 'Docs',
-                onTap: () => layoutProvider.setIndex(2),
-              ),
-              _NavItem(
-                index: 3,
-                currentIndex: currentIndex,
-                activeIcon: IconsaxPlusBold.card,
-                inactiveIcon: IconsaxPlusLinear.card,
-                label: 'Fees',
-                onTap: () => layoutProvider.setIndex(3),
-              ),
-              _NavItem(
-                index: 4,
-                currentIndex: currentIndex,
                 activeIcon: IconsaxPlusBold.user,
                 inactiveIcon: IconsaxPlusLinear.user,
                 label: 'Profile',
-                onTap: () => layoutProvider.setIndex(4),
+                onTap: () => layoutProvider.setIndex(2),
               ),
             ],
           ),

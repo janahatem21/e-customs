@@ -109,9 +109,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   if (shouldPop && mounted) Navigator.pop(context);
                 },
                 icon: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
+                  IconsaxPlusLinear.arrow_left,
                   color: AppColors.blackText,
-                  size: 20,
                 ),
               ),
               title: const Text(

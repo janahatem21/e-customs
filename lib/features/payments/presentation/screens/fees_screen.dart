@@ -2,8 +2,7 @@ import 'package:e_customs/core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../provider/fees_provider.dart';
-import '../../domain/entities/fee_entity.dart';
+import '../provider/payment_provider.dart';
 import '../widgets/fees_header_card.dart';
 import '../widgets/fee_breakdown_item.dart';
 import '../widgets/payment_info_note.dart';
@@ -24,7 +23,7 @@ class FeesScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 24),
             // Header Card with basic info
-            Selector<FeesProvider, (String, double, String)>(
+            Selector<PaymentProvider, (String, double, String)>(
               selector: (_, p) => (p.shipmentId, p.totalAmount, p.currency),
               builder: (context, data, _) {
                 return FeesHeaderCard(
@@ -59,12 +58,11 @@ class FeesScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Selector<FeesProvider, List<FeeEntity>>(
-                    selector: (_, p) => p.breakdown,
-                    builder: (context, breakdown, _) {
+                  child: Consumer<PaymentProvider>(
+                    builder: (context, provider, child) {
                       return Column(
                         children:
-                            breakdown.map((item) {
+                            provider.breakdown.map((item) {
                               return FeeBreakdownItem(
                                 title: item.title,
                                 description: item.description,
@@ -83,12 +81,11 @@ class FeesScreen extends StatelessWidget {
             const SizedBox(height: 32),
 
             // Information Note
-            Selector<FeesProvider, (String, double)>(
-              selector: (_, p) => (p.invoiceNumber, p.declaredValue),
-              builder: (context, data, _) {
-                return PaymentInfoNote(
-                  invoiceNumber: data.$1,
-                  declaredValue: data.$2,
+            Consumer<PaymentProvider>(
+              builder: (context, provider, _) {
+                return const PaymentInfoNote(
+                  invoiceNumber: "INV-2024-001", // Default for now
+                  declaredValue: 0.0,
                 );
               },
             ).animate().fadeIn(duration: 400.ms, delay: 350.ms),
@@ -96,11 +93,11 @@ class FeesScreen extends StatelessWidget {
             const SizedBox(height: 40),
 
             // Action Button
-            Selector<FeesProvider, double>(
+            Selector<PaymentProvider, double>(
                   selector: (_, p) => p.totalAmount,
                   builder: (context, total, _) {
                     return AppButton(
-                      text: "Pay Now (€${total.toStringAsFixed(2)})",
+                      text: "Pay Now (\$${total.toStringAsFixed(2)})",
                       onPressed: () {
                         Navigator.pushNamed(context, AppRouter.checkout);
                       },

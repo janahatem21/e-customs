@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:e_customs/core/constants/app_colors.dart';
-import 'package:e_customs/features/notifications/data/entities/notification_entity.dart';
 import 'package:e_customs/features/notifications/presentation/providers/notification_provider.dart';
 
 class FilterTabsRow extends StatelessWidget {
@@ -9,40 +8,35 @@ class FilterTabsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NotificationProvider>(
-      builder: (context, provider, child) {
-        return Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: AppColors.lightGrey, width: 0.5),
-            ),
-          ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-            child: Row(
-              children: [
-                _FilterChip(
-                  label: 'All',
-                  isSelected: provider.selectedType == null,
-                  onTap: () => provider.setFilter(null),
-                ),
-                ...NotificationType.values.map((type) {
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 12),
-                    child: _FilterChip(
-                      label: type.label,
-                      isSelected: provider.selectedType == type,
-                      onTap: () => provider.setFilter(type),
-                    ),
-                  );
-                }),
-              ],
-            ),
-          ),
-        );
-      },
+    final filters = ['All', 'Declarations', 'Payments', 'System'];
+    
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: AppColors.lightGrey, width: 0.5),
+        ),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+        child: Row(
+          children: filters.map((filter) {
+            final isSelected = context.select<NotificationsProvider, bool>(
+              (p) => p.selectedFilter == filter,
+            );
+            
+            return Padding(
+              padding: EdgeInsets.only(left: filter == 'All' ? 0 : 12),
+              child: _FilterChip(
+                label: filter,
+                isSelected: isSelected,
+                onTap: () => context.read<NotificationsProvider>().changeFilter(filter),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 }
