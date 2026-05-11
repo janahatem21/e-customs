@@ -67,7 +67,10 @@ class ScanInvoiceCameraView extends StatelessWidget {
                 width: 2,
               ),
             ),
-            child: Image.file(provider.selectedImage!, fit: BoxFit.cover),
+            child: ClipRRect(
+              borderRadius: BorderRadiusGeometry.circular(28),
+              child: Image.file(provider.selectedImage!, fit: BoxFit.cover),
+            ),
           ),
         ).animate().fadeIn().scale(begin: const Offset(0.9, 0.9)),
         const SizedBox(height: 32),

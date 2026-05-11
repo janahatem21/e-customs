@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
@@ -11,6 +12,7 @@ import '../../../../core/services/firebase_services.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/services/notification_service.dart';
 import '../provider/declaration_provider.dart';
+import '../../../../core/errors/exceptions.dart';
 
 enum OcrState { idle, loading, success, error }
 
@@ -69,9 +71,16 @@ class ScanInvoiceProvider extends ChangeNotifier {
       _items = results;
       _state = OcrState.success;
       notifyListeners();
+    } on NoTextDetectedException {
+      _state = OcrState.error;
+      _errorMessage =
+          "Could not analyze this receipt. Please try another image or add items manually.";
+      notifyListeners();
     } catch (e) {
       _state = OcrState.error;
-      _errorMessage = e.toString();
+      _errorMessage =
+          "Automatic receipt analysis is currently unavailable. Please add your items manually.";
+      dev.log("Scan Invoice Error: $e", name: "ScanInvoiceProvider");
       notifyListeners();
     }
   }

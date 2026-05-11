@@ -1,60 +1,72 @@
 import 'dart:convert';
 import 'dart:developer' as dev;
+import 'dart:io';
 import 'package:e_customs/features/customs/data/models/ocr_item_model.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:injectable/injectable.dart';
+import '../errors/exceptions.dart';
+import 'image_processor_service.dart';
 
 @lazySingleton
 class OcrService {
   final _textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+  final ImageProcessorService _imageProcessor;
 
   late final GenerativeModel _model;
 
-  OcrService() {
-    // Migration: Using firebase_ai (v3.11.0+) which supports Gemini 2.5 Flash
-    // We use FirebaseAI.googleAI() to connect via Google AI provider
-    _model = FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash');
+  OcrService(this._imageProcessor) {
+    _model = FirebaseAI.googleAI().generativeModel(model: 'gemini-1.5-flash');
   }
 
   Future<List<OcrItemModel>> extractItemsFromImage(String imagePath) async {
+    // 1. ML Kit Validation: Check if image contains readable text
     final inputImage = InputImage.fromFilePath(imagePath);
-    final RecognizedText recognizedText = await _textRecognizer.processImage(
-      inputImage,
-    );
+    final RecognizedText recognizedText =
+        await _textRecognizer.processImage(inputImage);
 
-    final String rawText = recognizedText.text;
+    if (recognizedText.text.trim().isEmpty) {
+      throw NoTextDetectedException();
+    }
 
-    if (rawText.trim().isEmpty) {
-      return [];
+    // 2. Compress Image
+    final File? compressedFile =
+        await _imageProcessor.compressImage(imagePath);
+    if (compressedFile == null) {
+      throw GeminiAnalysisException('Image compression failed');
     }
 
     try {
-      // 1. Try Intelligent Parsing with Gemini 2.5 Flash
-      return await _extractItemsWithAI(rawText);
+      // 3. Intelligent Analysis with Gemini Vision
+      return await _analyzeImageWithVision(compressedFile);
     } catch (e) {
-      // 2. Log the specific error (e.g., Quota Exceeded or Model Error)
       dev.log(
-        'Gemini AI failed, switching to Manual Fallback. Reason: $e',
+        'Gemini Vision Analysis failed: $e',
         name: 'OcrService',
       );
-
-      // 3. Fallback to manual parsing if AI fails
-      return _fallbackManualParsing(recognizedText);
+      rethrow;
     }
   }
 
-  Future<List<OcrItemModel>> _extractItemsWithAI(String rawText) async {
+  Future<List<OcrItemModel>> _analyzeImageWithVision(File imageFile) async {
+    final imageBytes = await imageFile.readAsBytes();
+
     final prompt = [
-      Content.text(
-        "You are an expert Customs Declaration Assistant. Your task is to parse raw OCR text from a shopping receipt into a structured JSON format.\n\n"
-        "**Rules:**\n"
-        "1. Extract a list of items. Each item must have: `name`, `price` (double), `quantity` (int), and `category`.\n"
-        "2. **Categories:** You must assign each item to one of these categories: ['Mobile', 'Laptop', 'Clothing', 'Electronics', 'Cosmetics']. If an item doesn't fit, use your intelligence to suggest a relevant high-level category (e.g., 'Accessories', 'Appliances') but keep it relevant to customs-taxable goods.\n"
-        "3. Ignore non-item text like store address, VAT numbers, total sum, or footer notes.\n"
-        "4. Ensure the output is ONLY a valid JSON array of objects.\n\n"
-        "Raw OCR Text:\n$rawText",
-      ),
+      Content.multi([
+        TextPart(
+          "You are an expert Customs Receipt Analyzer. Analyze the provided image of a shopping receipt visually.\n\n"
+          "**Goal:** Extract a clean list of purchased products for customs declaration.\n\n"
+          "**Instructions:**\n"
+          "1. Detect only purchased items/products. Ignore store metadata, VAT/tax details, or payment info.\n"
+          "2. Handle discounts and coupons: Extract the FINAL price paid for each item after any item-level discounts.\n"
+          "3. For each item, provide: `name`, `price` (float), `quantity` (int), `currency` (3-letter code), and `category`.\n"
+          "4. Assign one of these categories: ['Electronics', 'Clothing', 'Cosmetics', 'Appliances', 'Accessories', 'Other'].\n"
+          "5. Avoid duplicate entries. If an item appears multiple times, combine them or list separately if prices differ.\n"
+          "6. If the receipt is not a shopping receipt or is unreadable, return an empty array [].\n\n"
+          "**Constraint:** Return the result strictly as a valid JSON array of objects. No markdown, no extra text.",
+        ),
+        InlineDataPart('image/jpeg', imageBytes),
+      ]),
     ];
 
     final response = await _model.generateContent(prompt);
@@ -62,31 +74,20 @@ class OcrService {
 
     if (text == null || text.isEmpty) return [];
 
+    // Clean JSON response (handle potential markdown formatting)
     final cleanedText =
         text.replaceAll('```json', '').replaceAll('```', '').trim();
 
     try {
-      final List<dynamic> jsonList = jsonDecode(cleanedText);
-      return jsonList.map((item) => OcrItemModel.fromJson(item)).toList();
+      final decoded = jsonDecode(cleanedText);
+      if (decoded is List) {
+        return decoded.map((item) => OcrItemModel.fromJson(item)).toList();
+      }
+      return [];
     } catch (e) {
       dev.log('JSON Parsing Error', error: e, name: 'OcrService');
-      throw Exception('Invalid AI response format');
+      throw GeminiAnalysisException('Failed to parse AI response');
     }
-  }
-
-  List<OcrItemModel> _fallbackManualParsing(RecognizedText recognizedText) {
-    final List<OcrItemModel> items = [];
-    for (TextBlock block in recognizedText.blocks) {
-      for (TextLine line in block.lines) {
-        try {
-          final item = OcrItemModel.fromTextLine(line.text);
-          items.add(item);
-        } catch (_) {
-          continue;
-        }
-      }
-    }
-    return items;
   }
 
   void dispose() {

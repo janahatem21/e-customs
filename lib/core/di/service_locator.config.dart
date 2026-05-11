@@ -13,6 +13,7 @@ import 'package:e_customs/core/providers/user_provider.dart' as _i479;
 import 'package:e_customs/core/services/fcm_service.dart' as _i612;
 import 'package:e_customs/core/services/firebase_services.dart' as _i1000;
 import 'package:e_customs/core/services/notification_service.dart' as _i775;
+import 'package:e_customs/core/services/image_processor_service.dart' as _i888;
 import 'package:e_customs/core/services/ocr_service.dart' as _i693;
 import 'package:e_customs/features/auth/data/datasources/auth_remote_datasource.dart'
     as _i263;
@@ -140,7 +141,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i612.FCMService>(() => _i612.FCMService());
     gh.lazySingleton<_i1000.FirebaseServices>(() => _i1000.FirebaseServices());
-    gh.lazySingleton<_i693.OcrService>(() => _i693.OcrService());
+    gh.lazySingleton<_i888.ImageProcessorService>(
+      () => _i888.ImageProcessorService(),
+    );
+    gh.lazySingleton<_i693.OcrService>(
+      () => _i693.OcrService(gh<_i888.ImageProcessorService>()),
+    );
     gh.lazySingleton<_i112.ItemsRemoteDataSource>(
       () => _i112.ItemsRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
     );
