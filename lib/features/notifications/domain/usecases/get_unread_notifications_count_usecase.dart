@@ -4,10 +4,9 @@ import '../repositories/notifications_repository.dart';
 @injectable
 class GetUnreadNotificationsCountUseCase {
   final NotificationsRepository _repository;
+  const GetUnreadNotificationsCountUseCase(this._repository);
 
-  GetUnreadNotificationsCountUseCase(this._repository);
-
-  Future<int> call(String userId) async {
-    return await _repository.getUnreadCount(userId);
+  Stream<int> call(String userId) {
+    return _repository.getUnreadCount(userId);
   }
 }

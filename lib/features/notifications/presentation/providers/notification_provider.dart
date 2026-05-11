@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import '../../domain/entities/notification_entity.dart';
@@ -33,6 +34,9 @@ class NotificationsProvider extends ChangeNotifier {
   int _unreadCount = 0;
   int get unreadCount => _unreadCount;
 
+  StreamSubscription<List<NotificationEntity>>? _notificationsSub;
+  StreamSubscription<int>? _unreadCountSub;
+
   List<NotificationEntity> get notifications => filteredNotifications;
 
   List<NotificationEntity> get filteredNotifications {
@@ -55,25 +59,46 @@ class NotificationsProvider extends ChangeNotifier {
     }).toList();
   }
 
-  Future<void> loadNotifications(String userId) async {
+  @override
+  void dispose() {
+    _notificationsSub?.cancel();
+    _unreadCountSub?.cancel();
+    super.dispose();
+  }
+
+  void loadNotifications(String userId) {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
-    try {
-      final results = await Future.wait([
-        _getNotificationsUseCase(userId),
-        _getUnreadNotificationsCountUseCase(userId),
-      ]);
+    // Cancel existing subscriptions if any
+    _notificationsSub?.cancel();
+    _unreadCountSub?.cancel();
 
-      _notifications = results[0] as List<NotificationEntity>;
-      _unreadCount = results[1] as int;
-    } catch (e) {
-      _errorMessage = e.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    // Listen to notifications stream
+    _notificationsSub = _getNotificationsUseCase(userId).listen(
+      (notifications) {
+        _notifications = notifications;
+        _isLoading = false;
+        notifyListeners();
+      },
+      onError: (e) {
+        _errorMessage = e.toString();
+        _isLoading = false;
+        notifyListeners();
+      },
+    );
+
+    // Listen to unread count stream
+    _unreadCountSub = _getUnreadNotificationsCountUseCase(userId).listen(
+      (count) {
+        _unreadCount = count;
+        notifyListeners();
+      },
+      onError: (e) {
+        debugPrint('Error listening to unread count: $e');
+      },
+    );
   }
 
   void changeFilter(String filter) {
@@ -87,24 +112,7 @@ class NotificationsProvider extends ChangeNotifier {
 
     try {
       await _markAllNotificationsAsReadUseCase(userId);
-      // Update local state to avoid extra fetch if possible,
-      // but simpler to just refresh or update locally
-      _notifications =
-          _notifications
-              .map(
-                (n) => NotificationEntity(
-                  id: n.id,
-                  title: n.title,
-                  body: n.body,
-                  type: n.type,
-                  isRead: true,
-                  createdAt: n.createdAt,
-                  declarationId: n.declarationId,
-                ),
-              )
-              .toList();
-      _unreadCount = 0;
-      notifyListeners();
+      // No need to manually update local state; Firestore Stream will push the update
     } catch (e) {
       _errorMessage = e.toString();
       notifyListeners();
@@ -112,29 +120,9 @@ class NotificationsProvider extends ChangeNotifier {
   }
 
   Future<void> markAsRead(String userId, String notificationId) async {
-    final index = _notifications.indexWhere((n) => n.id == notificationId);
-    if (index == -1 || _notifications[index].isRead) return;
-
     try {
       await _markNotificationAsReadUseCase(userId, notificationId);
-
-      final n = _notifications[index];
-      final updatedNotification = NotificationEntity(
-        id: n.id,
-        title: n.title,
-        body: n.body,
-        type: n.type,
-        isRead: true,
-        createdAt: n.createdAt,
-        declarationId: n.declarationId,
-      );
-
-      // Replace list with a new reference to trigger Selector/Provider updates
-      _notifications = List<NotificationEntity>.from(_notifications);
-      _notifications[index] = updatedNotification;
-
-      if (_unreadCount > 0) _unreadCount--;
-      notifyListeners();
+      // No need to manually update local state; Firestore Stream will push the update
     } catch (e) {
       _errorMessage = e.toString();
       notifyListeners();

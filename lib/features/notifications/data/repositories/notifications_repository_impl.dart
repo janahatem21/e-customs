@@ -10,13 +10,13 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
   NotificationsRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<List<NotificationEntity>> getNotifications(String userId) async {
-    return await _remoteDataSource.getNotifications(userId);
+  Stream<List<NotificationEntity>> getNotifications(String userId) {
+    return _remoteDataSource.getNotifications(userId);
   }
 
   @override
-  Future<int> getUnreadCount(String userId) async {
-    return await _remoteDataSource.getUnreadCount(userId);
+  Stream<int> getUnreadCount(String userId) {
+    return _remoteDataSource.getUnreadCount(userId);
   }
 
   @override

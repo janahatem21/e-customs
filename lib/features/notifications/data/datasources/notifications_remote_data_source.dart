@@ -3,10 +3,10 @@ import '../../../../core/services/firebase_services.dart';
 import '../models/notification_model.dart';
 
 abstract interface class NotificationsRemoteDataSource {
-  Future<List<NotificationModel>> getNotifications(String userId);
+  Stream<List<NotificationModel>> getNotifications(String userId);
   Future<void> markAllAsRead(String userId);
   Future<void> markAsRead(String userId, String notificationId);
-  Future<int> getUnreadCount(String userId);
+  Stream<int> getUnreadCount(String userId);
 }
 
 @LazySingleton(as: NotificationsRemoteDataSource)
@@ -16,32 +16,30 @@ class NotificationsRemoteDataSourceImpl
   const NotificationsRemoteDataSourceImpl(this._firebaseServices);
 
   @override
-  Future<List<NotificationModel>> getNotifications(String userId) async {
-    final snapshot =
-        await _firebaseServices.firestore
-            .collection('users')
-            .doc(userId)
-            .collection('notifications')
-            .orderBy('createdAt', descending: true)
-            .get();
-
-    return snapshot.docs
-        .map((doc) => NotificationModel.fromJson(doc.data(), doc.id))
-        .toList();
+  Stream<List<NotificationModel>> getNotifications(String userId) {
+    return _firebaseServices.firestore
+        .collection('users')
+        .doc(userId)
+        .collection('notifications')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => NotificationModel.fromJson(doc.data(), doc.id))
+                  .toList(),
+        );
   }
 
   @override
-  Future<int> getUnreadCount(String userId) async {
-    final snapshot =
-        await _firebaseServices.firestore
-            .collection('users')
-            .doc(userId)
-            .collection('notifications')
-            .where('isRead', isEqualTo: false)
-            .count()
-            .get();
-
-    return snapshot.count ?? 0;
+  Stream<int> getUnreadCount(String userId) {
+    return _firebaseServices.firestore
+        .collection('users')
+        .doc(userId)
+        .collection('notifications')
+        .where('isRead', isEqualTo: false)
+        .snapshots()
+        .map((snapshot) => snapshot.size);
   }
 
   @override

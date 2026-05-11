@@ -130,10 +130,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             final userId =
                                 context.read<UserProvider>().user?.id;
                             if (userId != null) {
-                              await context
+                              context
                                   .read<NotificationsProvider>()
                                   .loadNotifications(userId);
                             }
+                            return Future.value();
                           },
                           child: ListView.builder(
                             padding: const EdgeInsets.only(bottom: 24),
