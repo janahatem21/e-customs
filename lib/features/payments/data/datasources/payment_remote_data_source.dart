@@ -28,7 +28,24 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
     required String userId,
     required String declarationId,
   }) async {
-    // 1. Fetch declaration
+    // 1. Fetch user to get passportId
+    final userDoc =
+        await _firebaseServices.firestore.collection('users').doc(userId).get();
+
+    if (!userDoc.exists) {
+      throw Exception('User profile not found');
+    }
+
+    final userData = userDoc.data()!;
+    final passportId = userData['passportId'] as String?;
+
+    if (passportId == null || passportId.trim().isEmpty) {
+      throw Exception(
+        'Passport ID is required to complete payment and generate QR. Please update your profile.',
+      );
+    }
+
+    // 2. Fetch declaration
     final docRef = _declarationsRef(userId).doc(declarationId);
     final doc = await docRef.get();
 
@@ -39,7 +56,7 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
     final data = doc.data()!;
     final status = data['status'] as String?;
 
-    // 2. Validate status
+    // 3. Validate status
     if (status != AppConstants.statusCalculated) {
       throw Exception('Declaration must be calculated before payment');
     }
@@ -47,16 +64,17 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
     final double totalAmount = (data['totalAmount'] as num?)?.toDouble() ?? 0.0;
     final DateTime now = DateTime.now();
 
-    // 3. Generate QR Data
+    // 4. Generate QR Data
     final qrMap = {
       'declarationId': declarationId,
+      'passportId': passportId,
       'totalAmount': totalAmount,
       'status': AppConstants.statusPaid,
       'timestamp': now.toIso8601String(),
     };
     final String qrData = jsonEncode(qrMap);
 
-    // 4. Update Firestore
+    // 5. Update Firestore
     final updateData = {
       'status': AppConstants.statusPaid,
       'qrData': qrData,
