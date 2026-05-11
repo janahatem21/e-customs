@@ -68,6 +68,9 @@ class ScanInvoiceProvider extends ChangeNotifier {
 
     try {
       final results = await _scanInvoiceUseCase(_selectedImage!.path);
+      if (results.isEmpty) {
+        throw NoTextDetectedException();
+      }
       _items = results;
       _state = OcrState.success;
       notifyListeners();
@@ -133,7 +136,7 @@ class ScanInvoiceProvider extends ChangeNotifier {
         userId,
       );
       if (declarationId == null) {
-        throw Exception('Could not ensure active declaration');
+        throw Exception('No active declaration found. Please start a declaration first.');
       }
 
       final itemsToSave =
@@ -170,6 +173,7 @@ class ScanInvoiceProvider extends ChangeNotifier {
       _isSaving = false;
       _state = OcrState.error;
       _errorMessage = e.toString();
+      dev.log("Confirm & Save Error: $e", name: "ScanInvoiceProvider");
       notifyListeners();
       return false;
     }

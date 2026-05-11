@@ -1,3 +1,4 @@
+import 'package:e_customs/core/routes/app_router.dart';
 import 'package:e_customs/core/utils/app_dialogs.dart';
 import 'package:e_customs/core/widgets/custom_back_button.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import '../provider/scan_invoice_provider.dart';
 import '../widgets/scan_invoice_camera_view.dart';
 import '../widgets/scan_invoice_processing_view.dart';
 import '../widgets/scan_invoice_preview_view.dart';
+import '../provider/declaration_provider.dart';
 
 class ScanInvoiceScreen extends StatefulWidget {
   const ScanInvoiceScreen({super.key});
@@ -23,6 +25,19 @@ class _ScanInvoiceScreenState extends State<ScanInvoiceScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkPassportId();
+      _setupErrorListener();
+      _checkActiveDeclaration();
+    });
+  }
+
+  void _setupErrorListener() {
+    final provider = context.read<ScanInvoiceProvider>();
+    provider.addListener(() {
+      if (provider.state == OcrState.error &&
+          provider.errorMessage != null &&
+          mounted) {
+        AppDialogs.showErrorSnackBar(context, provider.errorMessage!);
+      }
     });
   }
 
@@ -37,6 +52,24 @@ class _ScanInvoiceScreenState extends State<ScanInvoiceScreen> {
           Navigator.pop(context);
         }
       });
+    }
+  }
+
+  void _checkActiveDeclaration() async {
+    final userId = context.read<UserProvider>().user?.id;
+    if (userId == null) return;
+
+    final declarationProvider = context.read<DeclarationProvider>();
+    final declarationId = await declarationProvider.ensureActiveDeclaration(
+      userId,
+    );
+
+    if (declarationId == null && mounted) {
+      Navigator.pushReplacementNamed(
+        context,
+        AppRouter.createDeclaration,
+        arguments: AppRouter.scanInvoice,
+      );
     }
   }
 

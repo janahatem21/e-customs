@@ -57,6 +57,7 @@ class QuickActionsSection extends StatelessWidget {
                         Navigator.pushNamed(
                           context,
                           AppRouter.createDeclaration,
+                          arguments: AppRouter.addItem,
                         );
                       }
                     }

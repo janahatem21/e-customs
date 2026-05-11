@@ -16,22 +16,22 @@ class OcrService {
   late final GenerativeModel _model;
 
   OcrService(this._imageProcessor) {
-    _model = FirebaseAI.googleAI().generativeModel(model: 'gemini-1.5-flash');
+    _model = FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash');
   }
 
   Future<List<OcrItemModel>> extractItemsFromImage(String imagePath) async {
     // 1. ML Kit Validation: Check if image contains readable text
     final inputImage = InputImage.fromFilePath(imagePath);
-    final RecognizedText recognizedText =
-        await _textRecognizer.processImage(inputImage);
+    final RecognizedText recognizedText = await _textRecognizer.processImage(
+      inputImage,
+    );
 
     if (recognizedText.text.trim().isEmpty) {
       throw NoTextDetectedException();
     }
 
     // 2. Compress Image
-    final File? compressedFile =
-        await _imageProcessor.compressImage(imagePath);
+    final File? compressedFile = await _imageProcessor.compressImage(imagePath);
     if (compressedFile == null) {
       throw GeminiAnalysisException('Image compression failed');
     }
@@ -40,10 +40,7 @@ class OcrService {
       // 3. Intelligent Analysis with Gemini Vision
       return await _analyzeImageWithVision(compressedFile);
     } catch (e) {
-      dev.log(
-        'Gemini Vision Analysis failed: $e',
-        name: 'OcrService',
-      );
+      dev.log('Gemini Vision Analysis failed: $e', name: 'OcrService');
       rethrow;
     }
   }

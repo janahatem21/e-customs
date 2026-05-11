@@ -8,8 +8,8 @@ import 'package:path/path.dart' as p;
 class ImageProcessorService {
   Future<File?> compressImage(String path) async {
     final tempDir = await getTemporaryDirectory();
-    final fileName = p.basename(path);
-    final targetPath = p.join(tempDir.path, 'compressed_$fileName');
+    final fileName = p.basenameWithoutExtension(path);
+    final targetPath = p.join(tempDir.path, 'compressed_$fileName.jpg');
 
     final result = await FlutterImageCompress.compressAndGetFile(
       path,

@@ -12,8 +12,8 @@
 import 'package:e_customs/core/providers/user_provider.dart' as _i479;
 import 'package:e_customs/core/services/fcm_service.dart' as _i612;
 import 'package:e_customs/core/services/firebase_services.dart' as _i1000;
+import 'package:e_customs/core/services/image_processor_service.dart' as _i170;
 import 'package:e_customs/core/services/notification_service.dart' as _i775;
-import 'package:e_customs/core/services/image_processor_service.dart' as _i888;
 import 'package:e_customs/core/services/ocr_service.dart' as _i693;
 import 'package:e_customs/features/auth/data/datasources/auth_remote_datasource.dart'
     as _i263;
@@ -141,11 +141,8 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i612.FCMService>(() => _i612.FCMService());
     gh.lazySingleton<_i1000.FirebaseServices>(() => _i1000.FirebaseServices());
-    gh.lazySingleton<_i888.ImageProcessorService>(
-      () => _i888.ImageProcessorService(),
-    );
-    gh.lazySingleton<_i693.OcrService>(
-      () => _i693.OcrService(gh<_i888.ImageProcessorService>()),
+    gh.lazySingleton<_i170.ImageProcessorService>(
+      () => _i170.ImageProcessorService(),
     );
     gh.lazySingleton<_i112.ItemsRemoteDataSource>(
       () => _i112.ItemsRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
@@ -174,9 +171,6 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i577.DeclarationsRemoteDataSourceImpl(gh<_i1000.FirebaseServices>()),
     );
-    gh.lazySingleton<_i80.OcrRemoteDataSource>(
-      () => _i80.OcrRemoteDataSourceImpl(gh<_i693.OcrService>()),
-    );
     gh.factory<_i568.CustomsRepository>(
       () => _i15.CustomsRepositoryImpl(gh<_i223.CustomsRemoteDataSource>()),
     );
@@ -203,6 +197,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1062.AddItemsUseCase>(
       () => _i1062.AddItemsUseCase(gh<_i53.ItemsRepository>()),
     );
+    gh.lazySingleton<_i693.OcrService>(
+      () => _i693.OcrService(gh<_i170.ImageProcessorService>()),
+    );
     gh.factory<_i610.NotificationsRepository>(
       () => _i607.NotificationsRepositoryImpl(
         gh<_i259.NotificationsRemoteDataSource>(),
@@ -217,9 +214,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i678.AuthRepository>(
       () => _i678.AuthRepositoryImpl(gh<_i263.AuthRemoteDataSource>()),
     );
-    gh.lazySingleton<_i511.OcrRepository>(
-      () => _i961.OcrRepositoryImpl(gh<_i80.OcrRemoteDataSource>()),
-    );
     gh.factory<_i765.HistoryRepository>(
       () => _i163.HistoryRepositoryImpl(gh<_i1060.HistoryRemoteDataSource>()),
     );
@@ -228,6 +222,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i945.GetItemsUseCase>(
       () => _i945.GetItemsUseCase(gh<_i568.CustomsRepository>()),
+    );
+    gh.lazySingleton<_i80.OcrRemoteDataSource>(
+      () => _i80.OcrRemoteDataSourceImpl(gh<_i693.OcrService>()),
     );
     gh.factory<_i203.ConfirmCalculationUseCase>(
       () => _i203.ConfirmCalculationUseCase(gh<_i872.DeclarationsRepository>()),
@@ -286,9 +283,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i610.NotificationsRepository>(),
       ),
     );
-    gh.factory<_i523.ScanInvoiceUseCase>(
-      () => _i523.ScanInvoiceUseCase(gh<_i511.OcrRepository>()),
-    );
     gh.factory<_i125.DeclarationProvider>(
       () => _i125.DeclarationProvider(
         gh<_i590.GetActiveDeclarationUseCase>(),
@@ -321,15 +315,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i678.AuthRepository>(),
       ),
     );
+    gh.lazySingleton<_i511.OcrRepository>(
+      () => _i961.OcrRepositoryImpl(gh<_i80.OcrRemoteDataSource>()),
+    );
     gh.factory<_i1049.CompletePaymentUseCase>(
       () => _i1049.CompletePaymentUseCase(gh<_i1069.PaymentRepository>()),
-    );
-    gh.factory<_i777.ScanInvoiceProvider>(
-      () => _i777.ScanInvoiceProvider(
-        gh<_i523.ScanInvoiceUseCase>(),
-        gh<_i1062.AddItemsUseCase>(),
-        gh<_i775.NotificationService>(),
-      ),
     );
     gh.factory<_i106.NotificationsProvider>(
       () => _i106.NotificationsProvider(
@@ -339,10 +329,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i950.GetUnreadNotificationsCountUseCase>(),
       ),
     );
+    gh.factory<_i523.ScanInvoiceUseCase>(
+      () => _i523.ScanInvoiceUseCase(gh<_i511.OcrRepository>()),
+    );
     gh.factory<_i773.PaymentProvider>(
       () => _i773.PaymentProvider(
         gh<_i1049.CompletePaymentUseCase>(),
         gh<_i872.DeclarationsRepository>(),
+        gh<_i775.NotificationService>(),
+      ),
+    );
+    gh.factory<_i777.ScanInvoiceProvider>(
+      () => _i777.ScanInvoiceProvider(
+        gh<_i523.ScanInvoiceUseCase>(),
+        gh<_i1062.AddItemsUseCase>(),
         gh<_i775.NotificationService>(),
       ),
     );

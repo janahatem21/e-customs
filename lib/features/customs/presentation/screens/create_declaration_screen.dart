@@ -60,9 +60,14 @@ class CreateDeclarationScreen extends StatelessWidget {
                     if (userId != null) {
                       final id = await provider.createNewDeclaration(userId);
                       if (id != null && context.mounted) {
+                        final fromScreen =
+                            ModalRoute.of(context)?.settings.arguments
+                                    as String? ??
+                                AppRouter.addItem;
+
                         Navigator.pushReplacementNamed(
                           context,
-                          AppRouter.addItem,
+                          fromScreen,
                           arguments: id,
                         );
                       }
