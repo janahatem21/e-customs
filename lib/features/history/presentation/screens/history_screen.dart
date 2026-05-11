@@ -121,7 +121,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     )
                     .animate()
                     .fadeIn(delay: (index * 50).ms)
-                    .slideX(begin: 0.1, end: 0);
+                    .slideY(begin: 0.1, end: 0);
               },
             ),
           ),

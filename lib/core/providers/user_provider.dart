@@ -46,6 +46,28 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> updatePassportId(String passportId) async {
+    if (_user == null) return;
+
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _firebaseServices.firestore
+          .collection('users')
+          .doc(_user!.id)
+          .update({'passportId': passportId});
+
+      _user = _user!.copyWith(passportId: passportId);
+    } catch (e) {
+      debugPrint('Error updating passport ID: $e');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   void logout() {
     _user = null;
     notifyListeners();

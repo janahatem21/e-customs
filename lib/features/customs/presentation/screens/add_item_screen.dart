@@ -14,6 +14,8 @@ import '../widgets/pending_items_list.dart';
 import '../../../../../core/widgets/app_input.dart';
 import '../../../../../core/widgets/app_card.dart';
 
+import '../../../../../core/providers/user_provider.dart';
+
 class AddItemScreen extends StatefulWidget {
   const AddItemScreen({super.key});
 
@@ -26,9 +28,24 @@ class _AddItemScreenState extends State<AddItemScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkPassportId();
       final provider = context.read<AddItemProvider>();
       provider.addListener(_onStateChange);
     });
+  }
+
+  void _checkPassportId() {
+    final userProvider = context.read<UserProvider>();
+    if (userProvider.user?.passportId == null) {
+      AppDialogs.showPassportIdDialog(
+        context,
+        onConfirm: (passportId) => userProvider.updatePassportId(passportId),
+      ).then((result) {
+        if (result == 'back' && mounted) {
+          Navigator.pop(context);
+        }
+      });
+    }
   }
 
   void _onStateChange() {
@@ -140,9 +157,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
-                  child: AddItemCurrencyDropdown(),
-                ),
+                const Expanded(child: AddItemCurrencyDropdown()),
               ],
             ),
             const SizedBox(height: 20),
@@ -185,17 +200,18 @@ class _AddItemScreenState extends State<AddItemScreen> {
       child: AppButton(
         text: 'Save All Items (${provider.pendingItems.length})',
         isLoading: provider.isLoading,
-        onPressed: provider.pendingItems.isEmpty
-            ? null
-            : () {
-                final userId = getIt<FirebaseServices>().currentUser?.uid;
-                if (userId != null) {
-                  provider.saveAllItems(
-                    userId: userId,
-                    declarationId: declarationId,
-                  );
-                }
-              },
+        onPressed:
+            provider.pendingItems.isEmpty
+                ? null
+                : () {
+                  final userId = getIt<FirebaseServices>().currentUser?.uid;
+                  if (userId != null) {
+                    provider.saveAllItems(
+                      userId: userId,
+                      declarationId: declarationId,
+                    );
+                  }
+                },
         trailingIcon: const Icon(IconsaxPlusLinear.tick_circle, size: 20),
       ),
     );
